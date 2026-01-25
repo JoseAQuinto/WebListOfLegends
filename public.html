@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>List Of Legends · Cuentas compartidas</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">LoL</div>
+      <div class="titles">
+        <h1>Cuentas compartidas</h1>
+        <p>Entra sin registrarte y añade una cuenta (no se puede editar ni borrar)</p>
+      </div>
+    </div>
+
+    <div class="session">
+      <a href="./index.html" class="btn btn-ghost">Volver</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2>Añadir cuenta</h2>
+          <p class="muted">Se guardará en la lista pública.</p>
+        </div>
+        <button id="btnRefreshPublic" class="btn btn-ghost">Refrescar</button>
+      </div>
+
+      <form id="publicForm" class="grid3">
+        <label>
+          Summoner
+          <input id="publicSummoner" required placeholder="NombreInvocador" />
+        </label>
+
+        <label>
+          Tag (opcional)
+          <input id="publicTag" placeholder="EUW / 1234 / etc." />
+        </label>
+
+        <label>
+          Región
+          <select id="publicRegion">
+            <option>EUW</option><option>EUNE</option><option>NA</option><option>KR</option>
+            <option>BR</option><option>LAN</option><option>LAS</option><option>OCE</option>
+            <option>TR</option><option>RU</option><option>JP</option><option>PH</option>
+            <option>SG</option><option>TH</option><option>TW</option><option>VN</option>
+          </select>
+        </label>
+
+        <label class="span3">
+          Nota (opcional)
+          <input id="publicNote" placeholder="rol, elo, duo, lo que sea…" />
+        </label>
+
+        <!-- honeypot anti-spam (si alguien lo rellena, lo ignoramos) -->
+        <input id="hpField" type="text" autocomplete="off" tabindex="-1"
+               style="position:absolute; left:-9999px; opacity:0;" />
+
+        <div class="row span3">
+          <button type="submit" class="btn">Enviar</button>
+          <span id="publicMsg" class="muted"></span>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Lista</h2>
+      <p class="muted">Últimas cuentas compartidas.</p>
+
+      <div class="tablewrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Summoner</th>
+              <th>Tag</th>
+              <th>Región</th>
+              <th>Nota</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody id="publicTbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer muted">
+    <span>List Of Legends · Public list</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./public.js"></script>
+</body>
+</html>
