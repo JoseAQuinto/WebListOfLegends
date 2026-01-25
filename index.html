@@ -49,76 +49,104 @@
 
     <!-- App -->
     <section id="appCard" class="card hidden">
-      <div class="card-header">
-        <div>
-          <h2>Mis cuentas</h2>
-          <p class="muted">Se guardan en tu Supabase (solo tú las ves).</p>
-        </div>
-        <button id="btnRefresh" class="btn btn-ghost">Refrescar</button>
-      </div>
 
-      <form id="accountForm" class="grid3">
-        <input type="hidden" id="editId" />
+  <!-- Compartir mi lista -->
+  <div class="card" style="margin-bottom:16px">
+    <h2>Compartir mi lista</h2>
+    <p class="muted">Elige tu código y compártelo con amigos. Solo se verán las cuentas que marques como públicas.</p>
 
-        <label>
-          Summoner
-          <input id="summonerName" required placeholder="NombreInvocador" />
-        </label>
+    <div class="row">
+      <input id="myCodeInput" placeholder="mi-codigo" style="max-width:260px" />
+      <button id="btnSaveMyCode" type="button" class="btn btn-secondary">Guardar código</button>
+      <button id="btnCopyLink" type="button" class="btn btn-ghost">Copiar enlace</button>
+    </div>
+  </div>
 
-        <label>
-          Tag (opcional)
-          <input id="tagLine" placeholder="EUW / 1234 / etc." />
-        </label>
+  <!-- Ver cuentas de un amigo -->
+  <div class="card" style="margin-bottom:16px">
+    <h2>Ver cuentas de un amigo</h2>
+    <p class="muted">Introduce el código que te haya pasado tu amigo.</p>
 
-        <label>
-          Región
-          <select id="region">
-            <option>EUW</option>
-            <option>EUNE</option>
-            <option>NA</option>
-            <option>KR</option>
-            <option>BR</option>
-            <option>LAN</option>
-            <option>LAS</option>
-            <option>OCE</option>
-            <option>TR</option>
-            <option>RU</option>
-            <option>JP</option>
-            <option>PH</option>
-            <option>SG</option>
-            <option>TH</option>
-            <option>TW</option>
-            <option>VN</option>
-          </select>
-        </label>
+    <div class="row">
+      <input id="friendCodeInput" placeholder="codigo-del-amigo" style="max-width:260px" />
+      <button id="btnLoadFriend" type="button" class="btn btn-secondary">Ver cuentas</button>
+      <button id="btnBackToMine" type="button" class="btn btn-ghost hidden">Volver a mis cuentas</button>
+    </div>
+  </div>
 
-        <label class="span3">
-          Nota (opcional)
-          <input id="note" placeholder="main role, mmr, duo, lo que sea…" />
-        </label>
+  <div class="card-header">
+    <div>
+      <h2>Mis cuentas</h2>
+      <p class="muted">Se guardan en tu Supabase (solo tú las ves).</p>
+    </div>
+    <button id="btnRefresh" class="btn btn-ghost">Refrescar</button>
+  </div>
 
-        <div class="row span3">
-          <button id="btnSave" type="submit" class="btn">Guardar</button>
-          <button id="btnCancelEdit" type="button" class="btn btn-secondary hidden">Cancelar edición</button>
-          <span id="appMsg" class="muted"></span>
-        </div>
-      </form>
+  <form id="accountForm" class="grid3">
+    <input type="hidden" id="editId" />
 
-      <div class="tablewrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Summoner</th>
-              <th>Tag</th>
-              <th>Región</th>
-              <th>Nota</th>
-              <th class="right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-    </section>
+    <label>
+      Summoner
+      <input id="summonerName" required placeholder="NombreInvocador" />
+    </label>
+
+    <label>
+      Tag (opcional)
+      <input id="tagLine" placeholder="EUW / 1234 / etc." />
+    </label>
+
+    <label>
+      Región
+      <select id="region">
+        <option>EUW</option>
+        <option>EUNE</option>
+        <option>NA</option>
+        <option>KR</option>
+        <option>BR</option>
+        <option>LAN</option>
+        <option>LAS</option>
+        <option>OCE</option>
+        <option>TR</option>
+        <option>RU</option>
+        <option>JP</option>
+        <option>PH</option>
+        <option>SG</option>
+        <option>TH</option>
+        <option>TW</option>
+        <option>VN</option>
+      </select>
+    </label>
+
+    <label class="span3">
+      Nota (opcional)
+      <input id="note" placeholder="main role, mmr, duo, lo que sea…" />
+    </label>
+
+    <div class="row span3">
+      <button id="btnSave" type="submit" class="btn">Guardar</button>
+      <button id="btnCancelEdit" type="button" class="btn btn-secondary hidden">Cancelar edición</button>
+      <span id="appMsg" class="muted"></span>
+    </div>
+  </form>
+
+  <div class="tablewrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Summoner</th>
+          <th>Tag</th>
+          <th>Región</th>
+          <th>Nota</th>
+          <th>Pública</th>
+          <th class="right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+</section>
+
   </main>
 
   <footer class="footer muted">

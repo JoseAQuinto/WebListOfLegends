@@ -1,6 +1,7 @@
 // ====== CONFIG ======
 const SUPABASE_URL = "https://ywqxxpmsgcrzmgythvif.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3cXh4cG1zZ2Nyem1neXRodmlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzMzA5NzQsImV4cCI6MjA4NDkwNjk3NH0.YBICeBd8S90UEGWtKjf08UWCY584TnGd3pqwzRXjX_w";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3cXh4cG1zZ2Nyem1neXRodmlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzMzA5NzQsImV4cCI6MjA4NDkwNjk3NH0.YBICeBd8S90UEGWtKjf08UWCY584TnGd3pqwzRXjX_w";
 
 // ====================
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -30,167 +31,297 @@ const appMsg = document.getElementById("appMsg");
 
 const tbody = document.getElementById("tbody");
 
-// Helpers
-function show(el){ el.classList.remove("hidden"); }
-function hide(el){ el.classList.add("hidden"); }
+// Friends
+const friendCodeInput = document.getElementById("friendCodeInput");
+const btnLoadFriend = document.getElementById("btnLoadFriend");
+const btnBackToMine = document.getElementById("btnBackToMine");
 
-function setMsg(el, text){
-  if (!text) { hide(el); el.textContent = ""; return; }
+// Share
+const myCodeInput = document.getElementById("myCodeInput");
+const btnSaveMyCode = document.getElementById("btnSaveMyCode");
+const btnCopyLink = document.getElementById("btnCopyLink");
+
+// State
+let viewingFriend = false;
+
+// Helpers
+function show(el) {
+  el?.classList.remove("hidden");
+}
+function hide(el) {
+  el?.classList.add("hidden");
+}
+
+function setMsg(el, text) {
+  if (!el) return;
+  if (!text) {
+    hide(el);
+    el.textContent = "";
+    return;
+  }
   el.textContent = text;
   show(el);
 }
 
-function setAppMsg(text){
+function setAppMsg(text) {
+  if (!appMsg) return;
   appMsg.textContent = text || "";
   if (text) setTimeout(() => (appMsg.textContent = ""), 2500);
 }
 
-function resetForm(){
-  editId.value = "";
-  summonerName.value = "";
-  tagLine.value = "";
-  region.value = "EUW";
-  note.value = "";
+function resetForm() {
+  if (editId) editId.value = "";
+  if (summonerName) summonerName.value = "";
+  if (tagLine) tagLine.value = "";
+  if (region) region.value = "EUW";
+  if (note) note.value = "";
   hide(btnCancelEdit);
 }
 
-function fillForm(row){
-  editId.value = row.id;
-  summonerName.value = row.summoner_name ?? "";
-  tagLine.value = row.tag_line ?? "";
-  region.value = row.region ?? "EUW";
-  note.value = row.note ?? "";
+function fillForm(row) {
+  if (!row) return;
+  if (editId) editId.value = row.id;
+  if (summonerName) summonerName.value = row.summoner_name ?? "";
+  if (tagLine) tagLine.value = row.tag_line ?? "";
+  if (region) region.value = row.region ?? "EUW";
+  if (note) note.value = row.note ?? "";
   show(btnCancelEdit);
-  summonerName.focus();
+  summonerName?.focus();
 }
 
-function escapeHtml(s){
+function escapeHtml(s) {
   return String(s ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function normalizeSlug(s) {
+  return (s || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-_]/g, "");
+}
+
+function isLoggedInSession(session) {
+  return !!session?.user?.id;
 }
 
 // Session/UI
-async function refreshSessionUI(){
-  const { data: { session } } = await supabaseClient.auth.getSession();
+async function refreshSessionUI() {
+  const {
+    data: { session },
+  } = await supabaseClient.auth.getSession();
 
-  if (!session){
+  if (!session) {
     show(authCard);
     hide(appCard);
     hide(btnLogout);
-    userEmail.textContent = "";
+    if (userEmail) userEmail.textContent = "";
     return;
   }
 
   hide(authCard);
   show(appCard);
   show(btnLogout);
-  userEmail.textContent = session.user.email || "";
+  if (userEmail) userEmail.textContent = session.user.email || "";
 
   await loadAccounts();
 }
 
-// Auth
-authForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  setMsg(authMsg, "");
-
-  const email = authEmail.value.trim();
-  const password = authPassword.value;
-
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if (error) return setMsg(authMsg, "Error al entrar: " + error.message);
-
-  authPassword.value = "";
-  await refreshSessionUI();
-});
-
-btnSignUp.addEventListener("click", async () => {
-  setMsg(authMsg, "");
-
-  const email = authEmail.value.trim();
-  const password = authPassword.value;
-
-  const { error } = await supabaseClient.auth.signUp({ email, password });
-  if (error) return setMsg(authMsg, "Error al crear cuenta: " + error.message);
-
-  setMsg(authMsg, "Cuenta creada. Si tienes confirmación por email activada, revisa tu correo.");
-});
-
-btnLogout.addEventListener("click", async () => {
-  await supabaseClient.auth.signOut();
-  resetForm();
-  tbody.innerHTML = "";
-  await refreshSessionUI();
-});
-
 // Data
-async function loadAccounts(){
+async function loadAccounts() {
+  viewingFriend = false;
+  hide(btnBackToMine);
+
   setAppMsg("Cargando…");
+
+  const {
+    data: { session },
+  } = await supabaseClient.auth.getSession();
+  if (!isLoggedInSession(session)) return;
 
   const { data, error } = await supabaseClient
     .from("lol_accounts")
-    .select("id, summoner_name, tag_line, region, note, created_at")
+    .select(
+      "id, summoner_name, tag_line, region, note, created_at, owner_slug, is_public, user_id"
+    )
+    .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
 
-  if (error){
+  if (error) {
     setAppMsg("Error al cargar: " + error.message);
     return;
+  }
+
+  // Autorellenar mi código si existe
+  const currentSlug = data?.find((x) => x.owner_slug)?.owner_slug || "";
+  if (myCodeInput && currentSlug && !myCodeInput.value) {
+    myCodeInput.value = currentSlug;
   }
 
   renderRows(data || []);
   setAppMsg("");
 }
 
-function renderRows(rows){
-  if (!rows.length){
+async function loadFriendAccounts(ownerSlug) {
+  const slug = normalizeSlug(ownerSlug);
+  if (!slug) return;
+
+  viewingFriend = true;
+
+  setAppMsg("Cargando cuentas del amigo…");
+
+  const { data, error } = await supabaseClient
+    .from("lol_accounts")
+    .select("id, summoner_name, tag_line, region, note, created_at, is_public")
+    .eq("owner_slug", slug)
+    .eq("is_public", true)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    setAppMsg("Error al cargar amigo: " + error.message);
+    return;
+  }
+
+  renderRows(data || []);
+  show(btnBackToMine);
+  setAppMsg("");
+}
+
+function renderRows(rows) {
+  if (!tbody) return;
+
+  if (!rows.length) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="5" class="muted">No hay cuentas aún. Añade la primera 👇</td>
+        <td colspan="6" class="muted">No hay cuentas aún.</td>
       </tr>
     `;
     return;
   }
 
-  tbody.innerHTML = rows.map(r => `
-    <tr data-id="${r.id}">
-      <td><strong>${escapeHtml(r.summoner_name)}</strong></td>
-      <td>${escapeHtml(r.tag_line || "")}</td>
-      <td>${escapeHtml(r.region || "")}</td>
-      <td>${escapeHtml(r.note || "")}</td>
-      <td class="right">
-        <button class="pill" data-action="edit">Editar</button>
-        <button class="pill-danger" data-action="delete">Borrar</button>
-      </td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = rows
+    .map((r) => {
+      const actionsHtml = viewingFriend
+        ? `<span class="muted">Solo lectura</span>`
+        : `
+          <button class="pill" data-action="edit">Editar</button>
+          <button class="pill-danger" data-action="delete">Borrar</button>
+        `;
+
+      const publicHtml = viewingFriend
+        ? `<span class="muted">${r.is_public ? "Sí" : "No"}</span>`
+        : `<input type="checkbox" data-action="toggle-public" ${
+            r.is_public ? "checked" : ""
+          } />`;
+
+      return `
+        <tr data-id="${r.id}">
+          <td><strong>${escapeHtml(r.summoner_name)}</strong></td>
+          <td>${escapeHtml(r.tag_line || "")}</td>
+          <td>${escapeHtml(r.region || "")}</td>
+          <td>${escapeHtml(r.note || "")}</td>
+          <td>${publicHtml}</td>
+          <td class="right">${actionsHtml}</td>
+        </tr>
+      `;
+    })
+    .join("");
 }
 
-// Create/Update
-accountForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+// Share (owner_slug)
+async function saveMyCode(slug) {
+  const {
+    data: { session },
+  } = await supabaseClient.auth.getSession();
+  if (!isLoggedInSession(session)) return;
 
-  const sn = summonerName.value.trim();
+  const clean = normalizeSlug(slug);
+  if (!clean) return setAppMsg("Código inválido");
+
+  // actualiza todas tus filas (las existentes)
+  const { error } = await supabaseClient
+    .from("lol_accounts")
+    .update({ owner_slug: clean })
+    .eq("user_id", session.user.id);
+
+  if (error) return setAppMsg("Error guardando código: " + error.message);
+
+  if (myCodeInput) myCodeInput.value = clean;
+  setAppMsg("Código guardado ✅");
+}
+
+// Auth
+authForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  setMsg(authMsg, "");
+
+  const email = authEmail?.value.trim();
+  const password = authPassword?.value;
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (error) return setMsg(authMsg, "Error al entrar: " + error.message);
+
+  if (authPassword) authPassword.value = "";
+  await refreshSessionUI();
+});
+
+btnSignUp?.addEventListener("click", async () => {
+  setMsg(authMsg, "");
+
+  const email = authEmail?.value.trim();
+  const password = authPassword?.value;
+
+  const { error } = await supabaseClient.auth.signUp({ email, password });
+  if (error) return setMsg(authMsg, "Error al crear cuenta: " + error.message);
+
+  setMsg(
+    authMsg,
+    "Cuenta creada. Si tienes confirmación por email activada, revisa tu correo."
+  );
+});
+
+btnLogout?.addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+  resetForm();
+  if (tbody) tbody.innerHTML = "";
+  await refreshSessionUI();
+});
+
+// Create/Update
+accountForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (viewingFriend) return;
+
+  const sn = summonerName?.value.trim();
   if (!sn) return;
 
-  // session para user_id
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  if (!session) return setAppMsg("No hay sesión activa.");
+  const {
+    data: { session },
+  } = await supabaseClient.auth.getSession();
+  if (!isLoggedInSession(session)) return setAppMsg("No hay sesión activa.");
 
   const payload = {
     summoner_name: sn,
-    tag_line: tagLine.value.trim() || null,
-    region: region.value,
-    note: note.value.trim() || null,
+    tag_line: tagLine?.value.trim() || null,
+    region: region?.value,
+    note: note?.value.trim() || null,
   };
 
-  const id = editId.value;
+  // si ya tienes código, lo aplicamos a nuevas filas también
+  const mySlug = normalizeSlug(myCodeInput?.value || "");
+  if (mySlug) payload.owner_slug = mySlug;
 
-  if (!id){
-    // Insert
+  const id = editId?.value;
+
+  if (!id) {
     const { error } = await supabaseClient
       .from("lol_accounts")
       .insert([{ ...payload, user_id: session.user.id }]);
@@ -203,11 +334,11 @@ accountForm.addEventListener("submit", async (e) => {
     return;
   }
 
-  // Update
   const { error } = await supabaseClient
     .from("lol_accounts")
     .update(payload)
-    .eq("id", id);
+    .eq("id", id)
+    .eq("user_id", session.user.id);
 
   if (error) return setAppMsg("Error al actualizar: " + error.message);
 
@@ -216,26 +347,45 @@ accountForm.addEventListener("submit", async (e) => {
   setAppMsg("Actualizado ✅");
 });
 
-btnCancelEdit.addEventListener("click", () => {
+btnCancelEdit?.addEventListener("click", () => {
   resetForm();
   setAppMsg("Edición cancelada");
 });
 
-btnRefresh.addEventListener("click", loadAccounts);
+btnRefresh?.addEventListener("click", () => {
+  if (!viewingFriend) loadAccounts();
+});
 
-// Row actions (edit/delete)
-tbody.addEventListener("click", async (e) => {
-  const btn = e.target.closest("button");
-  if (!btn) return;
+// Row actions (toggle/edit/delete)
+tbody?.addEventListener("click", async (e) => {
+  const el = e.target;
+  const tr = el.closest("tr");
+  if (!tr) return;
 
-  const tr = btn.closest("tr");
-  const id = tr?.dataset?.id;
-  const action = btn.dataset.action;
-
+  const id = tr.dataset.id;
   if (!id) return;
 
-  if (action === "edit"){
-    // sacamos datos desde el DOM para no pedir de nuevo
+  const action = el.dataset?.action;
+  if (!action) return;
+
+  if (viewingFriend) return;
+
+  // toggle public
+  if (action === "toggle-public") {
+    const checked = !!el.checked;
+
+    const { error } = await supabaseClient
+      .from("lol_accounts")
+      .update({ is_public: checked })
+      .eq("id", id);
+
+    if (error) return setAppMsg("Error: " + error.message);
+
+    setAppMsg(checked ? "Ahora es pública ✅" : "Ahora es privada ✅");
+    return;
+  }
+
+  if (action === "edit") {
     const tds = tr.querySelectorAll("td");
     fillForm({
       id,
@@ -247,7 +397,7 @@ tbody.addEventListener("click", async (e) => {
     return;
   }
 
-  if (action === "delete"){
+  if (action === "delete") {
     const ok = confirm("¿Borrar esta cuenta?");
     if (!ok) return;
 
@@ -263,6 +413,51 @@ tbody.addEventListener("click", async (e) => {
     setAppMsg("Borrado ✅");
   }
 });
+
+// Friend UI
+if (btnLoadFriend && btnBackToMine && friendCodeInput) {
+  btnLoadFriend.addEventListener("click", async () => {
+    const code = friendCodeInput.value.trim();
+    if (!code) return setAppMsg("Introduce un código");
+    await loadFriendAccounts(code);
+  });
+
+  btnBackToMine.addEventListener("click", async () => {
+    hide(btnBackToMine);
+    friendCodeInput.value = "";
+    await loadAccounts();
+  });
+}
+
+// Share UI
+if (btnSaveMyCode && myCodeInput) {
+  btnSaveMyCode.addEventListener("click", async () => {
+    await saveMyCode(myCodeInput.value);
+    await loadAccounts();
+  });
+}
+
+if (btnCopyLink && myCodeInput) {
+  btnCopyLink.addEventListener("click", async () => {
+    const code = normalizeSlug(myCodeInput.value);
+    if (!code) return setAppMsg("Primero guarda un código");
+
+    const url = `${location.origin}${location.pathname}?friend=${encodeURIComponent(
+      code
+    )}`;
+    await navigator.clipboard.writeText(url);
+    setAppMsg("Enlace copiado ✅");
+  });
+}
+
+// Preload friend from URL
+(function preloadFriendFromUrl() {
+  const params = new URLSearchParams(location.search);
+  const friend = params.get("friend");
+  if (friend && friendCodeInput) {
+    friendCodeInput.value = friend;
+  }
+})();
 
 // Reactividad a cambios de sesión
 supabaseClient.auth.onAuthStateChange(() => {
