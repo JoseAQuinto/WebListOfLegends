@@ -123,5 +123,13 @@ publicForm?.addEventListener("submit", async (e) => {
 
 btnRefreshPublic?.addEventListener("click", loadPublic);
 
+const url = `/api/riot-check?gameName=${encodeURIComponent(name)}&tagLine=${encodeURIComponent(tag)}&region=${encodeURIComponent(region)}`;
+const r = await fetch(url);
+const data = await r.json();
+if (!data.exists) { /* mostrar error */ }
+
+
+
 // init
 loadPublic();
+
