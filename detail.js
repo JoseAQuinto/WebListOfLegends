@@ -114,13 +114,18 @@ function profileIconUrl(profileIconId){
 }
 
 function renderRanked(entries){
+  // Si viene error desde backend:
+  if (entries && !Array.isArray(entries) && entries.error) {
+    rankedWrap.innerHTML = `<div class="muted">Ranked no disponible (${entries.status || "?"})</div>`;
+    return;
+  }
+
   const arr = Array.isArray(entries) ? entries : [];
   if (!arr.length) {
     rankedWrap.innerHTML = `<div class="muted">Sin datos ranked.</div>`;
     return;
   }
 
-  // Normalizamos por queue
   const byQueue = {};
   for (const e of arr) byQueue[e.queueType] = e;
 
@@ -149,7 +154,15 @@ function renderRanked(entries){
   `;
 }
 
+
 function renderMastery(top){
+  if (top && !Array.isArray(top) && top.error) {
+    masteryTbody.innerHTML = `
+      <tr><td colspan="4" class="muted">Maestrías no disponibles (${top.status || "?"})</td></tr>
+    `;
+    return;
+  }
+
   if (!Array.isArray(top) || !top.length) {
     masteryTbody.innerHTML = `
       <tr><td colspan="4" class="muted">Sin datos.</td></tr>
@@ -167,7 +180,15 @@ function renderMastery(top){
   `).join("");
 }
 
+
 function renderMatches(matchIds){
+  if (matchIds && !Array.isArray(matchIds) && matchIds.error) {
+    matchesTbody.innerHTML = `
+      <tr><td colspan="2" class="muted">Partidas no disponibles (${matchIds.status || "?"})</td></tr>
+    `;
+    return;
+  }
+
   if (!Array.isArray(matchIds) || !matchIds.length) {
     matchesTbody.innerHTML = `
       <tr><td colspan="2" class="muted">Sin partidas recientes.</td></tr>
@@ -187,6 +208,7 @@ function renderMatches(matchIds){
     </tr>
   `).join("");
 }
+
 
 matchesTbody?.addEventListener("click", async (e) => {
   const btn = e.target.closest("button");
@@ -221,7 +243,8 @@ async function loadRiotData(row){
     `/api/riot-check?gameName=${encodeURIComponent(gn)}` +
     `&tagLine=${encodeURIComponent(tl)}` +
     `&region=${encodeURIComponent(rg)}` +
-    `&full=1&matches=0`;
+    `&full=1&matches=5`;
+
 
   const res = await fetch(`${location.origin}${url}`);
 
