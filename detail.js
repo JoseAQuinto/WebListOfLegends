@@ -181,18 +181,50 @@ function renderMastery(top){
 }
 
 
-function renderMatches(matchIds){
-  if (matchIds && !Array.isArray(matchIds) && matchIds.error) {
-    matchesTbody.innerHTML = `
-      <tr><td colspan="2" class="muted">Partidas no disponibles (${matchIds.status || "?"})</td></tr>
-    `;
+function formatDuration(seconds) {
+  const m = Math.floor((seconds || 0) / 60);
+  const s = Math.floor((seconds || 0) % 60);
+  return `${m}m ${String(s).padStart(2, "0")}s`;
+}
+
+function renderMatches(matchIds, recentMatches, puuid){
+  // si tenemos detalles, pintamos tabla pro
+  if (Array.isArray(recentMatches) && recentMatches.length) {
+    const rows = recentMatches
+      .filter(x => x && x.ok && x.data && x.data.info && Array.isArray(x.data.info.participants))
+      .map(x => {
+        const info = x.data.info;
+        const me = info.participants.find(p => p.puuid === puuid);
+        if (!me) return null;
+
+        const win = !!me.win;
+        const kda = `${me.kills}/${me.deaths}/${me.assists}`;
+        const champ = me.championName || me.championId;
+        const pos = me.teamPosition || me.individualPosition || "—";
+        const dur = formatDuration(info.gameDuration);
+
+        return `
+          <tr>
+            <td><strong>${escapeHtml(champ)}</strong></td>
+            <td>${escapeHtml(kda)}</td>
+            <td>${win ? `<span class="pill">Victoria</span>` : `<span class="pill-danger">Derrota</span>`}</td>
+            <td>${escapeHtml(pos)}</td>
+            <td class="right">${escapeHtml(dur)}</td>
+          </tr>
+        `;
+      })
+      .filter(Boolean);
+
+    matchesTbody.innerHTML = rows.length
+      ? rows.join("")
+      : `<tr><td colspan="5" class="muted">Sin detalles disponibles.</td></tr>`;
+
     return;
   }
 
+  // fallback: solo IDs (lo que ya tenías)
   if (!Array.isArray(matchIds) || !matchIds.length) {
-    matchesTbody.innerHTML = `
-      <tr><td colspan="2" class="muted">Sin partidas recientes.</td></tr>
-    `;
+    matchesTbody.innerHTML = `<tr><td colspan="2" class="muted">Sin partidas recientes.</td></tr>`;
     return;
   }
 
@@ -208,6 +240,7 @@ function renderMatches(matchIds){
     </tr>
   `).join("");
 }
+
 
 
 matchesTbody?.addEventListener("click", async (e) => {
@@ -302,7 +335,8 @@ if (contentType.includes("application/json")) {
   renderMastery(data.masteryTop);
 
   // Matches
-  renderMatches(data.matchIds);
+  renderMatches(data.matchIds, data.recentMatches, data.summoner?.puuid || data.account?.puuid);
+
 }
 
 async function loadAll(){
