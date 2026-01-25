@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>List Of Legends</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">LoL</div>
+      <div class="titles">
+        <h1>List Of Legends</h1>
+        <p>Guarda tus cuentas de League of Legends (sin build)</p>
+      </div>
+    </div>
+
+    <div class="session">
+      <span id="userEmail" class="muted"></span>
+      <button id="btnLogout" class="btn btn-ghost hidden">Salir</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Auth -->
+    <section id="authCard" class="card">
+      <h2>Acceso</h2>
+      <p class="muted">Inicia sesión o crea una cuenta para guardar tus listas.</p>
+
+      <form id="authForm" class="grid2">
+        <label>
+          Email
+          <input id="authEmail" type="email" autocomplete="email" required placeholder="tu@email.com" />
+        </label>
+        <label>
+          Password
+          <input id="authPassword" type="password" autocomplete="current-password" required placeholder="••••••••" />
+        </label>
+
+        <div class="row span2">
+          <button id="btnSignIn" type="submit" class="btn">Entrar</button>
+          <button id="btnSignUp" type="button" class="btn btn-secondary">Crear cuenta</button>
+        </div>
+      </form>
+
+      <div id="authMsg" class="msg hidden"></div>
+    </section>
+
+    <!-- App -->
+    <section id="appCard" class="card hidden">
+      <div class="card-header">
+        <div>
+          <h2>Mis cuentas</h2>
+          <p class="muted">Se guardan en tu Supabase (solo tú las ves).</p>
+        </div>
+        <button id="btnRefresh" class="btn btn-ghost">Refrescar</button>
+      </div>
+
+      <form id="accountForm" class="grid3">
+        <input type="hidden" id="editId" />
+
+        <label>
+          Summoner
+          <input id="summonerName" required placeholder="NombreInvocador" />
+        </label>
+
+        <label>
+          Tag (opcional)
+          <input id="tagLine" placeholder="EUW / 1234 / etc." />
+        </label>
+
+        <label>
+          Región
+          <select id="region">
+            <option>EUW</option>
+            <option>EUNE</option>
+            <option>NA</option>
+            <option>KR</option>
+            <option>BR</option>
+            <option>LAN</option>
+            <option>LAS</option>
+            <option>OCE</option>
+            <option>TR</option>
+            <option>RU</option>
+            <option>JP</option>
+            <option>PH</option>
+            <option>SG</option>
+            <option>TH</option>
+            <option>TW</option>
+            <option>VN</option>
+          </select>
+        </label>
+
+        <label class="span3">
+          Nota (opcional)
+          <input id="note" placeholder="main role, mmr, duo, lo que sea…" />
+        </label>
+
+        <div class="row span3">
+          <button id="btnSave" type="submit" class="btn">Guardar</button>
+          <button id="btnCancelEdit" type="button" class="btn btn-secondary hidden">Cancelar edición</button>
+          <span id="appMsg" class="muted"></span>
+        </div>
+      </form>
+
+      <div class="tablewrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Summoner</th>
+              <th>Tag</th>
+              <th>Región</th>
+              <th>Nota</th>
+              <th class="right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer muted">
+    <span>List Of Legends · Supabase + Vanilla JS</span>
+  </footer>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
