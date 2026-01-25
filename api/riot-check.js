@@ -1,10 +1,10 @@
 // api/riot-check.js
-// Vercel Serverless Function (Node)
-// Endpoint: /api/riot-check?gameName=...&tagLine=...&region=EUW&full=1&matches=2
 
 function json(res, status, body) {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
+  // opcional: cache corto para no fundir rate limit
+  res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=60");
   res.end(JSON.stringify(body, null, 2));
 }
 
@@ -12,11 +12,9 @@ function getRiotKey() {
   return process.env.RIOT_API_KEY;
 }
 
-// Region UI -> platform routing (LoL platform) + regional routing (Account/Match)
 function mapRouting(region) {
   const r = String(region || "EUW").toUpperCase();
 
-  // LoL platform routing (Summoner/League/Mastery)
   const platformByRegion = {
     EUW: "euw1",
     EUNE: "eun1",
@@ -36,8 +34,6 @@ function mapRouting(region) {
     VN: "vn2",
   };
 
-  // Regional routing (Account-V1: americas/asia/europe) :contentReference[oaicite:2]{index=2}
-  // Match-V5 también usa regional routing (incluye SEA en muchos ejemplos; si no lo usas, puedes omitir SEA).
   const regionalByRegion = {
     EUW: "europe",
     EUNE: "europe",
@@ -52,9 +48,7 @@ function mapRouting(region) {
     KR: "asia",
     JP: "asia",
 
-    // SEA shards (para Match-V5 suelen ir a "sea"; Account-V1 oficial indica americas/asia/europe,
-    // pero en práctica muchas integraciones usan sea para estos shards en endpoints regionales.
-    // Si te diera problemas, cambia SEA -> asia.
+    // SEA shards: si alguna vez te falla, cambia "sea" -> "asia"
     OCE: "sea",
     PH: "sea",
     SG: "sea",
@@ -63,18 +57,18 @@ function mapRouting(region) {
     VN: "sea",
   };
 
-  const platform = platformByRegion[r] || "euw1";
-  const regional = regionalByRegion[r] || "europe";
-  return { platform, regional, region: r };
+  return {
+    platform: platformByRegion[r] || "euw1",
+    regional: regionalByRegion[r] || "europe",
+    region: r,
+  };
 }
 
 async function riotFetch(url, apiKey) {
-  const resp = await fetch(url, {
-    headers: { "X-Riot-Token": apiKey },
-  });
-
+  const resp = await fetch(url, { headers: { "X-Riot-Token": apiKey } });
   const text = await resp.text();
-  let data;
+
+  let data = null;
   try {
     data = text ? JSON.parse(text) : null;
   } catch {
@@ -108,8 +102,7 @@ export default async function handler(req, res) {
 
     const { platform, regional, region: regionNorm } = mapRouting(region);
 
-    // 1) Account-V1 (Riot ID -> puuid) :contentReference[oaicite:3]{index=3}
-    // account routing: https://{regional}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}
+    // 1) Account-V1 (RiotID -> puuid)
     const accUrl =
       `https://${regional}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/` +
       `${encodeURIComponent(gn)}/${encodeURIComponent(tl)}`;
@@ -117,7 +110,6 @@ export default async function handler(req, res) {
     const acc = await riotFetch(accUrl, apiKey);
 
     if (!acc.ok) {
-      // 404 => no existe
       if (acc.status === 404) {
         return json(res, 200, {
           exists: false,
@@ -133,10 +125,9 @@ export default async function handler(req, res) {
       });
     }
 
-    const account = acc.data; // { puuid, gameName, tagLine }
+    const account = acc.data;
     const puuid = account?.puuid;
 
-    // Respuesta mínima (solo “existe”)
     if (String(full) !== "1") {
       return json(res, 200, {
         exists: true,
@@ -146,14 +137,11 @@ export default async function handler(req, res) {
       });
     }
 
-    // 2) Summoner-V4 by PUUID (platform routing) :contentReference[oaicite:4]{index=4}
+    // 2) Summoner-V4 (by puuid)
     const summUrl =
       `https://${platform}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/` +
       `${encodeURIComponent(puuid)}`;
 
-    // 3) League-V4 by summonerId (ranked)
-    // https://{platform}.api.riotgames.com/lol/league/v4/entries/by-summoner/{encryptedSummonerId}
-    // (summonerId viene del summoner-v4)
     const summ = await riotFetch(summUrl, apiKey);
     if (!summ.ok) {
       return json(res, summ.status, {
@@ -163,9 +151,10 @@ export default async function handler(req, res) {
       });
     }
 
-    const summoner = summ.data; // includes id (encryptedSummonerId), accountId, puuid, name, profileIconId, summonerLevel, ...
+    const summoner = summ.data;
     const encSummonerId = summoner?.id;
 
+    // 3) League + Mastery (platform routing)
     const leagueUrl =
       `https://${platform}.api.riotgames.com/lol/league/v4/entries/by-summoner/` +
       `${encodeURIComponent(encSummonerId)}`;
@@ -174,33 +163,41 @@ export default async function handler(req, res) {
       `https://${platform}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/` +
       `${encodeURIComponent(encSummonerId)}`;
 
-    // 4) Match-V5 list by puuid (regional routing)
+    // matches
+    const matchCount = Math.max(0, Math.min(5, parseInt(matches, 10) || 0));
+    const wantMatchList = matchCount > 0 || String(matches) === "0"; 
+    // si quieres SIEMPRE devolver matchIds, deja wantMatchList=true
+    // si quieres ahorrar llamadas cuando matches=0, pon: const wantMatchList = matchCount > 0;
+
     const matchListUrl =
       `https://${regional}.api.riotgames.com/lol/match/v5/matches/by-puuid/` +
       `${encodeURIComponent(puuid)}/ids?start=0&count=10`;
 
-    const [league, mastery, matchIdsResp] = await Promise.all([
+    const promises = [
       riotFetch(leagueUrl, apiKey),
       riotFetch(masteryUrl, apiKey),
-      riotFetch(matchListUrl, apiKey),
-    ]);
+      wantMatchList ? riotFetch(matchListUrl, apiKey) : Promise.resolve({ ok: true, status: 200, data: [] }),
+    ];
 
-    const ranked = league.ok ? league.data : { error: league.data, status: league.status };
-    const masteryAll = mastery.ok ? mastery.data : { error: mastery.data, status: mastery.status };
-    const masteryTop = Array.isArray(masteryAll) ? masteryAll.slice(0, 10) : masteryAll;
+    const [league, mastery, matchIdsResp] = await Promise.all(promises);
 
-    const matchIds = matchIdsResp.ok ? matchIdsResp.data : [];
+    // ✅ siempre arrays para frontend
+    const ranked = league.ok && Array.isArray(league.data) ? league.data : [];
+    const masteryArr = mastery.ok && Array.isArray(mastery.data) ? mastery.data : [];
+    const masteryTop = masteryArr.slice(0, 10);
 
-    // opcional: traer detalles de N matches
-    const matchCount = Math.max(0, Math.min(5, parseInt(matches, 10) || 0));
+    const matchIds = matchIdsResp.ok && Array.isArray(matchIdsResp.data) ? matchIdsResp.data : [];
+
+    // detalles de N matches (si matchCount>0)
     let recentMatches = [];
-    if (matchCount > 0 && Array.isArray(matchIds) && matchIds.length) {
+    if (matchCount > 0 && matchIds.length) {
       const ids = matchIds.slice(0, matchCount);
-      const matchDetailUrls = ids.map(
+      const detailUrls = ids.map(
         (id) => `https://${regional}.api.riotgames.com/lol/match/v5/matches/${encodeURIComponent(id)}`
       );
-      const matchDetails = await Promise.all(matchDetailUrls.map((u) => riotFetch(u, apiKey)));
-      recentMatches = matchDetails.map((m, i) => ({
+
+      const details = await Promise.all(detailUrls.map((u) => riotFetch(u, apiKey)));
+      recentMatches = details.map((m, i) => ({
         matchId: ids[i],
         ok: m.ok,
         status: m.status,
@@ -208,17 +205,24 @@ export default async function handler(req, res) {
       }));
     }
 
+    // opcional: errores para debug sin romper el frontend
+    const errors = {};
+    if (!league.ok) errors.ranked = { status: league.status, details: league.data };
+    if (!mastery.ok) errors.mastery = { status: mastery.status, details: mastery.data };
+    if (!matchIdsResp.ok) errors.matches = { status: matchIdsResp.status, details: matchIdsResp.data };
+
     return json(res, 200, {
       exists: true,
       region: regionNorm,
       routing: { platform, regional },
       input: { gameName: gn, tagLine: tl },
-      account,   // puuid + riotId
-      summoner,  // summonerId, icon, level...
-      ranked,    // ranks
+      account,
+      summoner,
+      ranked,
       masteryTop,
       matchIds,
       recentMatches,
+      errors, // puedes quitarlo si no lo quieres
     });
   } catch (e) {
     return json(res, 500, { error: "Server error", message: e?.message || String(e) });

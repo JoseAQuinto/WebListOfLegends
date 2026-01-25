@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Detalle · List Of Legends</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">LoL</div>
+      <div class="titles">
+        <h1>Detalle de cuenta</h1>
+        <p class="muted">Datos en vivo desde Riot (via Vercel Function)</p>
+      </div>
+    </div>
+
+    <div class="session">
+      <a href="./public.html" class="btn btn-ghost">← Volver</a>
+      <button id="btnLogout" class="btn btn-ghost hidden">Salir</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2 id="titleLine">Cargando…</h2>
+          <p class="muted" id="subLine"></p>
+        </div>
+        <button id="btnRefreshDetail" class="btn btn-ghost">Refrescar</button>
+      </div>
+
+      <div id="basicGrid" class="grid3" style="margin-top:12px">
+        <div>
+          <div class="muted">Icono</div>
+          <div id="iconWrap" style="margin-top:8px"></div>
+        </div>
+
+        <div>
+          <div class="muted">Nivel</div>
+          <div id="summonerLevel" style="font-size:28px;font-weight:700;margin-top:6px">—</div>
+        </div>
+
+        <div>
+          <div class="muted">Estado</div>
+          <div id="statusPill" style="margin-top:8px"></div>
+        </div>
+      </div>
+
+      <div id="msg" class="msg hidden" style="margin-top:12px"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2>Ranked</h2>
+          <p class="muted">SoloQ / Flex (si existe)</p>
+        </div>
+      </div>
+
+      <div id="rankedWrap" class="grid2" style="margin-top:12px"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2>Maestrías (Top 10)</h2>
+          <p class="muted">Por ahora mostramos IDs de campeón (luego lo mapeamos a nombres)</p>
+        </div>
+      </div>
+
+      <div class="tablewrap" style="margin-top:12px">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ChampionId</th>
+              <th>Nivel</th>
+              <th>Puntos</th>
+              <th class="right">Última vez</th>
+            </tr>
+          </thead>
+          <tbody id="masteryTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2>Últimas partidas</h2>
+          <p class="muted">Mostramos IDs + resumen básico si pedimos detalles</p>
+        </div>
+      </div>
+
+      <div class="tablewrap" style="margin-top:12px">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Match ID</th>
+              <th class="right">Detalle</th>
+            </tr>
+          </thead>
+          <tbody id="matchesTbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer muted">
+    <span>List Of Legends · Detail</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./detail.js"></script>
+</body>
+</html>

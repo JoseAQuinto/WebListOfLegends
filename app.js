@@ -206,18 +206,25 @@ function renderRows(rows) {
 
   tbody.innerHTML = rows
     .map((r) => {
+      const viewBtn = `
+        <button class="pill" data-action="view">Ver</button>
+      `;
+
       const actionsHtml = viewingFriend
-        ? `<span class="muted">Solo lectura</span>`
+        ? viewBtn
         : `
+          ${viewBtn}
           <button class="pill" data-action="edit">Editar</button>
           <button class="pill-danger" data-action="delete">Borrar</button>
         `;
 
       const publicHtml = viewingFriend
         ? `<span class="muted">${r.is_public ? "Sí" : "No"}</span>`
-        : `<input type="checkbox" data-action="toggle-public" ${
-            r.is_public ? "checked" : ""
-          } />`;
+        : `<input
+             type="checkbox"
+             data-action="toggle-public"
+             ${r.is_public ? "checked" : ""}
+           />`;
 
       return `
         <tr data-id="${r.id}">
@@ -232,6 +239,7 @@ function renderRows(rows) {
     })
     .join("");
 }
+
 
 // Share (owner_slug)
 async function saveMyCode(slug) {
@@ -356,7 +364,7 @@ btnRefresh?.addEventListener("click", () => {
   if (!viewingFriend) loadAccounts();
 });
 
-// Row actions (toggle/edit/delete)
+// Row actions (toggle/edit/delete/view)
 tbody?.addEventListener("click", async (e) => {
   const el = e.target;
   const tr = el.closest("tr");
@@ -368,6 +376,13 @@ tbody?.addEventListener("click", async (e) => {
   const action = el.dataset?.action;
   if (!action) return;
 
+  // ✅ Ver detalle (permitido incluso en modo amigo)
+  if (action === "view") {
+    location.href = `detail.html?id=${id}`;
+    return;
+  }
+
+  // ⛔ El resto de acciones NO se permiten en modo amigo
   if (viewingFriend) return;
 
   // toggle public
@@ -413,6 +428,7 @@ tbody?.addEventListener("click", async (e) => {
     setAppMsg("Borrado ✅");
   }
 });
+
 
 // Friend UI
 if (btnLoadFriend && btnBackToMine && friendCodeInput) {
