@@ -4,7 +4,381 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>List Of Legends · Cuentas compartidas</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .titles h1 {
+      font-size: 1.5rem;
+      color: #667eea;
+    }
+
+    .titles p {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .btn {
+      padding: 0.5rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-ghost:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn:not(.btn-ghost) {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn:not(.btn-ghost):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .card h2 {
+      color: #667eea;
+      margin-bottom: 0.5rem;
+    }
+
+    .muted {
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .span3 {
+      grid-column: span 3;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-weight: 500;
+      color: #555;
+    }
+
+    input, select {
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .tablewrap {
+      overflow-x: auto;
+      margin-top: 1rem;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th {
+      background: #f8f9fa;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: #667eea;
+    }
+
+    .table td {
+      padding: 1rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: white;
+    }
+
+    /* Birthday Section */
+    .birthday-section {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border-radius: 20px;
+    }
+
+    .birthday-section h2 {
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .birthday-btn {
+      background: white;
+      color: #f5576c;
+      font-size: 1.2rem;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    .birthday-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .modal-content h3 {
+      color: #667eea;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .modal-buttons button {
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-yes {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+
+    .btn-no {
+      background: #e0e0e0;
+      color: #666;
+    }
+
+    .modal-buttons button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* Celebration */
+    .celebration {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2000;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .celebration.active {
+      display: flex;
+    }
+
+    .celebration-content {
+      text-align: center;
+      color: white;
+    }
+
+    .celebration-content h2 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      animation: bounce 1s infinite;
+    }
+
+    .celebration-content p {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .close-celebration {
+      background: white;
+      color: #667eea;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: #f0f;
+      position: absolute;
+      animation: fall 3s linear;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .firework {
+      position: fixed;
+      border-radius: 50%;
+      animation: explode 1s ease-out;
+    }
+
+    @keyframes explode {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .grid3 {
+        grid-template-columns: 1fr;
+      }
+      
+      .topbar {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="topbar">
@@ -22,6 +396,12 @@
   </header>
 
   <main class="container">
+    <!-- Birthday Section -->
+    <section class="card birthday-section">
+      <h2>🎂 ¿Es hoy tu cumpleaños?</h2>
+      <button class="birthday-btn" id="btnBirthday">¡Haz clic aquí!</button>
+    </section>
+
     <section class="card">
       <div class="card-header">
         <div>
@@ -57,7 +437,6 @@
           <input id="publicNote" placeholder="rol, elo, duo, lo que sea…" />
         </label>
 
-        <!-- honeypot anti-spam (si alguien lo rellena, lo ignoramos) -->
         <input id="hpField" type="text" autocomplete="off" tabindex="-1"
                style="position:absolute; left:-9999px; opacity:0;" />
 
@@ -89,11 +468,137 @@
     </section>
   </main>
 
+  <!-- Modal -->
+  <div class="modal" id="birthdayModal">
+    <div class="modal-content">
+      <h3>¿Es realmente tu cumpleaños hoy?</h3>
+      <div class="modal-buttons">
+        <button class="btn-yes" id="btnYes">Sí 🎉</button>
+        <button class="btn-no" id="btnNo">No 😅</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Celebration -->
+  <div class="celebration" id="celebration">
+    <div class="celebration-content">
+      <h2>🎉 ¡FELIZ CUMPLEAÑOS! 🎂</h2>
+      <p>¡Que tengas un día increíble lleno de victorias!</p>
+      <button class="close-celebration" id="btnCloseCelebration">Gracias 😊</button>
+    </div>
+  </div>
+
   <footer class="footer muted">
     <span>List Of Legends · Public list</span>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./public.js"></script>
+  <script>
+    // Birthday functionality
+    const btnBirthday = document.getElementById('btnBirthday');
+    const modal = document.getElementById('birthdayModal');
+    const btnYes = document.getElementById('btnYes');
+    const btnNo = document.getElementById('btnNo');
+    const celebration = document.getElementById('celebration');
+    const btnCloseCelebration = document.getElementById('btnCloseCelebration');
+
+    btnBirthday.addEventListener('click', () => {
+      modal.classList.add('active');
+    });
+
+    btnNo.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+
+    btnYes.addEventListener('click', () => {
+      modal.classList.remove('active');
+      celebration.classList.add('active');
+      createConfetti();
+      createFireworks();
+    });
+
+    btnCloseCelebration.addEventListener('click', () => {
+      celebration.classList.remove('active');
+    });
+
+    function createConfetti() {
+      const colors = ['#ff0080', '#00ff80', '#0080ff', '#ffff00', '#ff00ff', '#00ffff'];
+      
+      for (let i = 0; i < 100; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.top = '-10px';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.width = Math.random() * 10 + 5 + 'px';
+          confetti.style.height = confetti.style.width;
+          document.body.appendChild(confetti);
+
+          setTimeout(() => confetti.remove(), 3000);
+        }, i * 30);
+      }
+    }
+
+    function createFireworks() {
+      const colors = ['#ff0080', '#00ff80', '#0080ff', '#ffff00', '#ff00ff'];
+      
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          const firework = document.createElement('div');
+          firework.className = 'firework';
+          firework.style.left = Math.random() * 100 + '%';
+          firework.style.top = Math.random() * 100 + '%';
+          firework.style.width = '50px';
+          firework.style.height = '50px';
+          firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+          document.body.appendChild(firework);
+
+          setTimeout(() => firework.remove(), 1000);
+        }, i * 200);
+      }
+    }
+
+    // Close modal clicking outside
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+      }
+    });
+
+    // Mock data for demonstration
+    const mockData = [
+      { summoner: 'DravenMain', tag: 'EUW', region: 'EUW', note: 'ADC/Diamond', fecha: '2025-01-26' },
+      { summoner: 'YasuoKing', tag: '1234', region: 'NA', note: 'Mid/Plat', fecha: '2025-01-25' },
+      { summoner: 'SupportGod', tag: 'EUW', region: 'EUW', note: 'Support/Gold', fecha: '2025-01-24' }
+    ];
+
+    function loadPublicList() {
+      const tbody = document.getElementById('publicTbody');
+      tbody.innerHTML = '';
+      
+      mockData.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.summoner}</td>
+          <td>${item.tag}</td>
+          <td>${item.region}</td>
+          <td>${item.note}</td>
+          <td>${item.fecha}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('publicForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('publicMsg');
+      msg.textContent = '✓ Cuenta añadida correctamente';
+      setTimeout(() => msg.textContent = '', 3000);
+    });
+
+    document.getElementById('btnRefreshPublic').addEventListener('click', loadPublicList);
+
+    loadPublicList();
+  </script>
 </body>
 </html>
