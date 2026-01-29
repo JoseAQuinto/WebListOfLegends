@@ -77,7 +77,7 @@ label{ display:grid; gap:6px; font-size:12px; color:var(--muted); }
 input, select{
   width:100%;
   padding:10px 12px;
-  border-radius:12px;
+  border-radius:5px;
   border:1px solid var(--line);
   background: rgba(0,0,0,.25);
   color: var(--fg);
@@ -189,4 +189,33 @@ tbody tr:hover{ background: rgba(255,255,255,.03); }
   .grid3{ grid-template-columns: 1fr; }
   .span3{ grid-column: span 1; }
   .right{ text-align:left; }
+}
+/* =========================
+   SELECT / OPTION CONTRASTE
+   ========================= */
+
+/* Select cerrado */
+select{
+  background-color: rgba(0,0,0,.35);
+  color: var(--fg);
+  border: 1px solid var(--line);
+}
+
+/* Opciones desplegadas (importante) */
+select option{
+  background-color: #0b0f1a; /* mismo bg base */
+  color: var(--fg);
+}
+
+/* Hover / seleccionado (según navegador) */
+select option:checked,
+select option:hover{
+  background-color: #22304a;
+  color: var(--fg);
+}
+
+/* Focus visible */
+select:focus{
+  border-color: rgba(47,107,255,.6);
+  box-shadow: 0 0 0 2px rgba(47,107,255,.25);
 }
