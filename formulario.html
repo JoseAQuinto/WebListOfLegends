@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>List Of Legends · Sugerencias</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">LoL</div>
+      <div class="titles">
+        <h1>Sugerencias</h1>
+        <p>Déjanos una idea para mejorar la app</p>
+      </div>
+    </div>
+
+    <div class="session">
+      <a href="./index.html" class="btn btn-secondary">Volver</a>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- LISTA ARRIBA -->
+    <section class="card" style="margin-bottom:16px">
+      <div class="card-header">
+        <div>
+          <h2>Últimas sugerencias</h2>
+          <p class="muted">Listado público (últimas 50).</p>
+        </div>
+        <button id="btnRefreshList" class="btn btn-ghost">Refrescar</button>
+      </div>
+
+      <div class="tablewrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Urgencia</th>
+              <th>Título</th>
+              <th>Sugerencia</th>
+            </tr>
+          </thead>
+          <tbody id="suggestTbody"></tbody>
+        </table>
+      </div>
+
+      <div id="listMsg" class="muted"></div>
+    </section>
+
+    <!-- FORMULARIO -->
+    <section class="card">
+      <h2>Enviar sugerencia</h2>
+      <p class="muted">No hace falta registrarse.</p>
+
+      <form id="suggestForm" class="grid2">
+        <label>
+          Urgencia
+          <select id="urgency" required>
+            <option value="normal" selected>Normal</option>
+            <option value="urgente">Urgente</option>
+            <option value="poco_importante">Poco importante</option>
+          </select>
+        </label>
+
+        <label>
+          Título (opcional)
+          <input id="title" placeholder="Ej: Añadir filtros en la lista" />
+        </label>
+
+        <label class="span2">
+          Sugerencia
+          <textarea id="message" rows="5" required placeholder="Escribe tu sugerencia..."></textarea>
+        </label>
+
+        <label class="span2">
+          Contacto (opcional)
+          <input id="contact" placeholder="Email/Discord (si quieres respuesta)" />
+        </label>
+
+        <div class="row span2">
+          <button id="btnSend" type="submit" class="btn">Enviar</button>
+          <span id="formMsg" class="muted"></span>
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+  <footer class="footer muted">
+    <span>List Of Legends · Supabase + Vanilla JS</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./formulario.js"></script>
+</body>
+</html>
