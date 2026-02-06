@@ -20,6 +20,7 @@ const hpField = document.getElementById("hpField");
 let lastSubmitAt = 0;
 
 function setMsg(text) {
+  if (!publicMsg) return;
   publicMsg.textContent = text || "";
   if (text) setTimeout(() => (publicMsg.textContent = ""), 2500);
 }
@@ -95,14 +96,14 @@ publicForm?.addEventListener("submit", async (e) => {
   const now = Date.now();
   if (now - lastSubmitAt < 5000) return setMsg("Espera 5 segundos y vuelve a intentar.");
 
-  const sn = publicSummoner.value.trim();
-  if (!sn) return;
+  const sn = publicSummoner?.value?.trim() || "";
+  if (!sn) return setMsg("Summoner requerido.");
 
   const payload = {
     summoner_name: sn,
-    tag_line: publicTag.value.trim() || null,
-    region: publicRegion.value,
-    note: publicNote.value.trim() || null,
+    tag_line: publicTag?.value?.trim() || null,
+    region: publicRegion?.value || "EUW",
+    note: publicNote?.value?.trim() || null,
   };
 
   const { error } = await supabaseClient
@@ -112,21 +113,18 @@ publicForm?.addEventListener("submit", async (e) => {
   if (error) return setMsg("Error al enviar: " + error.message);
 
   lastSubmitAt = now;
-  publicSummoner.value = "";
-  publicTag.value = "";
-  publicRegion.value = "EUW";
-  publicNote.value = "";
-  setMsg("Enviado ✅");
 
+  // reset
+  if (publicSummoner) publicSummoner.value = "";
+  if (publicTag) publicTag.value = "";
+  if (publicRegion) publicRegion.value = "EUW";
+  if (publicNote) publicNote.value = "";
+
+  setMsg("Enviado ✅");
   await loadPublic();
 });
 
 btnRefreshPublic?.addEventListener("click", loadPublic);
 
-
-
-
-
 // init
 loadPublic();
-

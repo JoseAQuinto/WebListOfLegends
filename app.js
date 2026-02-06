@@ -3,7 +3,6 @@ const SUPABASE_URL = "https://ywqxxpmsgcrzmgythvif.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3cXh4cG1zZ2Nyem1neXRodmlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzMzA5NzQsImV4cCI6MjA4NDkwNjk3NH0.YBICeBd8S90UEGWtKjf08UWCY584TnGd3pqwzRXjX_w";
 
-// ====================
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // UI refs
@@ -24,6 +23,7 @@ const editId = document.getElementById("editId");
 const summonerName = document.getElementById("summonerName");
 const tagLine = document.getElementById("tagLine");
 const region = document.getElementById("region");
+const elo = document.getElementById("elo"); // <-- NUEVO
 const note = document.getElementById("note");
 const btnCancelEdit = document.getElementById("btnCancelEdit");
 const btnRefresh = document.getElementById("btnRefresh");
@@ -36,7 +36,7 @@ const friendCodeInput = document.getElementById("friendCodeInput");
 const btnLoadFriend = document.getElementById("btnLoadFriend");
 const btnBackToMine = document.getElementById("btnBackToMine");
 
-// Share
+// Share (puede estar comentado en HTML -> null)
 const myCodeInput = document.getElementById("myCodeInput");
 const btnSaveMyCode = document.getElementById("btnSaveMyCode");
 const btnCopyLink = document.getElementById("btnCopyLink");
@@ -74,6 +74,7 @@ function resetForm() {
   if (summonerName) summonerName.value = "";
   if (tagLine) tagLine.value = "";
   if (region) region.value = "EUW";
+  if (elo) elo.value = ""; // <-- NUEVO
   if (note) note.value = "";
   hide(btnCancelEdit);
 }
@@ -84,6 +85,7 @@ function fillForm(row) {
   if (summonerName) summonerName.value = row.summoner_name ?? "";
   if (tagLine) tagLine.value = row.tag_line ?? "";
   if (region) region.value = row.region ?? "EUW";
+  if (elo) elo.value = row.elo ?? ""; // <-- NUEVO
   if (note) note.value = row.note ?? "";
   show(btnCancelEdit);
   summonerName?.focus();
@@ -147,7 +149,7 @@ async function loadAccounts() {
   const { data, error } = await supabaseClient
     .from("lol_accounts")
     .select(
-      "id, summoner_name, tag_line, region, note, created_at, owner_slug, is_public, user_id"
+      "id, summoner_name, tag_line, region, elo, note, created_at, owner_slug, is_public, user_id"
     )
     .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
@@ -157,7 +159,7 @@ async function loadAccounts() {
     return;
   }
 
-  // Autorellenar mi código si existe
+  // Autorellenar mi código si existe (si el bloque share está en HTML)
   const currentSlug = data?.find((x) => x.owner_slug)?.owner_slug || "";
   if (myCodeInput && currentSlug && !myCodeInput.value) {
     myCodeInput.value = currentSlug;
@@ -177,7 +179,7 @@ async function loadFriendAccounts(ownerSlug) {
 
   const { data, error } = await supabaseClient
     .from("lol_accounts")
-    .select("id, summoner_name, tag_line, region, note, created_at, is_public")
+    .select("id, summoner_name, tag_line, region, elo, note, created_at, is_public")
     .eq("owner_slug", slug)
     .eq("is_public", true)
     .order("created_at", { ascending: false });
@@ -198,7 +200,7 @@ function renderRows(rows) {
   if (!rows.length) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="6" class="muted">No hay cuentas aún.</td>
+        <td colspan="7" class="muted">No hay cuentas aún.</td>
       </tr>
     `;
     return;
@@ -206,9 +208,7 @@ function renderRows(rows) {
 
   tbody.innerHTML = rows
     .map((r) => {
-      const viewBtn = `
-        <button class="pill" data-action="view">Ver</button>
-      `;
+      const viewBtn = `<button class="pill" data-action="view">Ver</button>`;
 
       const actionsHtml = viewingFriend
         ? viewBtn
@@ -220,17 +220,14 @@ function renderRows(rows) {
 
       const publicHtml = viewingFriend
         ? `<span class="muted">${r.is_public ? "Sí" : "No"}</span>`
-        : `<input
-             type="checkbox"
-             data-action="toggle-public"
-             ${r.is_public ? "checked" : ""}
-           />`;
+        : `<input type="checkbox" data-action="toggle-public" ${r.is_public ? "checked" : ""} />`;
 
       return `
         <tr data-id="${r.id}">
           <td><strong>${escapeHtml(r.summoner_name)}</strong></td>
           <td>${escapeHtml(r.tag_line || "")}</td>
           <td>${escapeHtml(r.region || "")}</td>
+          <td>${escapeHtml(r.elo || "")}</td>
           <td>${escapeHtml(r.note || "")}</td>
           <td>${publicHtml}</td>
           <td class="right">${actionsHtml}</td>
@@ -239,7 +236,6 @@ function renderRows(rows) {
     })
     .join("");
 }
-
 
 // Share (owner_slug)
 async function saveMyCode(slug) {
@@ -320,10 +316,11 @@ accountForm?.addEventListener("submit", async (e) => {
     summoner_name: sn,
     tag_line: tagLine?.value.trim() || null,
     region: region?.value,
+    elo: (elo?.value || "").trim() || null, // <-- NUEVO
     note: note?.value.trim() || null,
   };
 
-  // si ya tienes código, lo aplicamos a nuevas filas también
+  // si ya tienes código, lo aplicamos a nuevas filas también (si existe input)
   const mySlug = normalizeSlug(myCodeInput?.value || "");
   if (mySlug) payload.owner_slug = mySlug;
 
@@ -407,7 +404,8 @@ tbody?.addEventListener("click", async (e) => {
       summoner_name: tds[0]?.innerText?.trim(),
       tag_line: tds[1]?.innerText?.trim(),
       region: tds[2]?.innerText?.trim(),
-      note: tds[3]?.innerText?.trim(),
+      elo: tds[3]?.innerText?.trim(),  // <-- NUEVO (posiciones cambiadas)
+      note: tds[4]?.innerText?.trim(), // <-- NUEVO
     });
     return;
   }
@@ -429,7 +427,6 @@ tbody?.addEventListener("click", async (e) => {
   }
 });
 
-
 // Friend UI
 if (btnLoadFriend && btnBackToMine && friendCodeInput) {
   btnLoadFriend.addEventListener("click", async () => {
@@ -445,7 +442,7 @@ if (btnLoadFriend && btnBackToMine && friendCodeInput) {
   });
 }
 
-// Share UI
+// Share UI (si está en HTML)
 if (btnSaveMyCode && myCodeInput) {
   btnSaveMyCode.addEventListener("click", async () => {
     await saveMyCode(myCodeInput.value);
@@ -458,9 +455,7 @@ if (btnCopyLink && myCodeInput) {
     const code = normalizeSlug(myCodeInput.value);
     if (!code) return setAppMsg("Primero guarda un código");
 
-    const url = `${location.origin}${location.pathname}?friend=${encodeURIComponent(
-      code
-    )}`;
+    const url = `${location.origin}${location.pathname}?friend=${encodeURIComponent(code)}`;
     await navigator.clipboard.writeText(url);
     setAppMsg("Enlace copiado ✅");
   });

@@ -1,52 +1,103 @@
+/* =========================
+   List Of Legends — Premium Dark (serio + elegante)
+   - Colores tipo tu ejemplo
+   - NO cambia estructura
+   - En botones: NO centramos el botón; solo el texto (text-align + line-height)
+   - <a> sin decoration
+   ========================= */
+
 :root{
   --bg:#0b0f1a;
   --card:#121a2b;
   --muted:#95a1b8;
   --fg:#e9eefb;
   --line:rgba(255,255,255,.08);
+
   --btn:#2f6bff;
   --btn2:#22304a;
   --danger:#ff3b3b;
+
+  /* extras (premium) */
+  --card-hi: rgba(255,255,255,.06);
+  --shadow: 0 14px 38px rgba(0,0,0,.35);
+  --shadow-soft: 0 10px 26px rgba(0,0,0,.28);
+  --focus: 0 0 0 3px rgba(47,107,255,.22);
+
+  --r:16px;
+  --r-sm:12px;
 }
 
 *{ box-sizing:border-box; }
 html,body{ height:100%; }
+
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background: radial-gradient(1200px 600px at 20% 0%, rgba(47,107,255,.25), transparent 60%),
-              radial-gradient(1000px 600px at 100% 20%, rgba(140,70,255,.18), transparent 55%),
-              var(--bg);
+  background:
+    radial-gradient(1200px 600px at 20% 0%, rgba(47,107,255,.22), transparent 60%),
+    radial-gradient(1000px 600px at 100% 20%, rgba(140,70,255,.12), transparent 55%),
+    radial-gradient(900px 700px at 50% 115%, rgba(255,255,255,.04), transparent 60%),
+    var(--bg);
   color:var(--fg);
 }
 
-a{ color:inherit; }
+/* Links: sin subrayado */
+a{ color:inherit; text-decoration:none; }
+a:hover{ text-decoration:none; }
+
 .hidden{ display:none !important; }
 .muted{ color:var(--muted); }
 .right{ text-align:right; }
 
+/* =========================
+   Topbar
+   ========================= */
 .topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:16px;
+
   padding:18px 22px;
   border-bottom:1px solid var(--line);
+
   position:sticky;
   top:0;
-  backdrop-filter: blur(10px);
-  background: rgba(11,15,26,.65);
+  z-index:50;
+
+  backdrop-filter: blur(12px);
+  background: rgba(11,15,26,.70);
 }
 
 .brand{ display:flex; gap:12px; align-items:center; }
+
 .logo{
   width:40px; height:40px; border-radius:12px;
   display:grid; place-items:center;
-  background: linear-gradient(135deg, rgba(47,107,255,.9), rgba(140,70,255,.9));
+
+  /* más serio: gradiente sutil + borde */
+  background:
+    radial-gradient(18px 14px at 30% 25%, rgba(255,255,255,.22), transparent 60%),
+    linear-gradient(135deg, rgba(47,107,255,.85), rgba(34,48,74,.95));
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow: 0 12px 26px rgba(0,0,0,.35);
   font-weight:800;
 }
-.titles h1{ margin:0; font-size:18px; line-height:1.1; }
+
+.titles h1{ margin:0; font-size:18px; line-height:1.1; letter-spacing:-.01em; }
 .titles p{ margin:2px 0 0; font-size:12px; color:var(--muted); }
 
+.session{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+/* =========================
+   Layout + Cards
+   ========================= */
 .container{
   max-width:980px;
   margin:24px auto;
@@ -56,11 +107,12 @@ a{ color:inherit; }
 }
 
 .card{
-  background: rgba(18,26,43,.85);
+  background:
+    linear-gradient(180deg, rgba(18,26,43,.92), rgba(18,26,43,.82));
   border:1px solid var(--line);
-  border-radius:16px;
+  border-radius:var(--r);
   padding:16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  box-shadow: var(--shadow);
 }
 
 .card-header{
@@ -69,71 +121,170 @@ a{ color:inherit; }
   align-items:flex-start;
   gap:12px;
   margin-bottom:12px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--line);
 }
 
-h2{ margin:0 0 8px; font-size:16px; }
+h2{ margin:0 0 8px; font-size:16px; letter-spacing:-.01em; }
+
 label{ display:grid; gap:6px; font-size:12px; color:var(--muted); }
 
+/* =========================
+   Inputs / Selects
+   ========================= */
 input, select{
   width:100%;
+  height:40px;
   padding:10px 12px;
-  border-radius:5px;
+
+  border-radius:12px;
   border:1px solid var(--line);
-  background: rgba(0,0,0,.25);
+
+  background: rgba(0,0,0,.28);
   color: var(--fg);
   outline:none;
-}
-input::placeholder{ color: rgba(149,161,184,.7); }
 
+  transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+
+input::placeholder{ color: rgba(149,161,184,.70); }
+
+input:hover, select:hover{
+  border-color: rgba(255,255,255,.12);
+  background: rgba(0,0,0,.32);
+}
+
+input:focus, select:focus{
+  border-color: rgba(47,107,255,.65);
+  box-shadow: var(--focus);
+  background: rgba(0,0,0,.34);
+}
+
+/* Grid */
 .grid2{
   display:grid;
   grid-template-columns: 1fr 1fr;
   gap:12px;
 }
+
 .grid3{
   display:grid;
   grid-template-columns: 1fr 1fr 160px;
   gap:12px;
   margin-top:8px;
 }
+
 .span2{ grid-column: span 2; }
 .span3{ grid-column: span 3; }
 
 .row{ display:flex; gap:10px; align-items:center; }
 
+/* =========================
+   Buttons (serios + premium)
+   - NO centramos el botón (sin flex)
+   - Centramos texto: text-align + line-height
+   ========================= */
 .btn{
-  padding:10px 12px;
-  border-radius:12px;
-  border:1px solid transparent;
-  background: var(--btn);
-  color: white;
-  font-weight:700;
-  cursor:pointer;
-}
-.btn:hover{ filter: brightness(1.06); }
-.btn:disabled{ opacity:.6; cursor:not-allowed; }
+  /* no flex: evita “centrar el botón” */
+  display:inline-block;
 
+  height:40px;
+  padding:0 14px;
+  border-radius:12px;
+
+  border:1px solid transparent;
+  cursor:pointer;
+
+  font-weight:700;
+  letter-spacing:-.01em;
+
+  /* centrado del texto */
+  text-align:center;
+  line-height:38px; /* (height - 2px border) aprox */
+  vertical-align:middle;
+
+  color:white;
+  background: var(--btn);
+
+  /* serio: sombra limpia, sin brillos */
+  box-shadow: 0 10px 22px rgba(0,0,0,.28);
+  transition: transform .14s ease, filter .14s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+
+.btn:hover{
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.btn:active{
+  transform: translateY(0);
+  filter: brightness(.98);
+}
+
+.btn:focus-visible{
+  outline:none;
+  box-shadow: var(--shadow-soft), var(--focus);
+}
+
+.btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+  transform:none;
+  box-shadow:none;
+}
+
+/* Secondary */
 .btn-secondary{
   background: var(--btn2);
   border-color: var(--line);
+  color: var(--fg);
 }
+
+/* Ghost */
 .btn-ghost{
   background: transparent;
   border:1px solid var(--line);
   color: var(--fg);
+  box-shadow: none;
 }
 
+.btn-ghost:hover{
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.12);
+  filter:none;
+}
+
+/* A con clase btn: sin subrayado siempre */
+a.btn, a.btn:hover, a.btn:visited{ text-decoration:none; }
+
+/* Si metes iconos dentro (svg/img/i) que queden serios y alineados */
+.btn svg,
+.btn img,
+.btn i{
+  width:16px;
+  height:16px;
+  vertical-align:middle;
+  margin-right:8px;
+  opacity:.92;
+}
+
+/* =========================
+   Table
+   ========================= */
 .tablewrap{
   margin-top:14px;
   border:1px solid var(--line);
   border-radius:14px;
   overflow:hidden;
+  background: rgba(0,0,0,.18);
 }
+
 .table{
   width:100%;
   border-collapse: collapse;
   font-size:13px;
 }
+
 thead th{
   text-align:left;
   padding:10px 12px;
@@ -142,12 +293,17 @@ thead th{
   color: var(--muted);
   font-weight:700;
 }
+
 tbody td{
   padding:10px 12px;
   border-bottom:1px solid var(--line);
 }
+
 tbody tr:hover{ background: rgba(255,255,255,.03); }
 
+/* =========================
+   Pills (por si quieres usarlas en acciones)
+   ========================= */
 .pill-danger{
   border:1px solid rgba(255,59,59,.35);
   color: #ffd1d1;
@@ -167,6 +323,9 @@ tbody tr:hover{ background: rgba(255,255,255,.03); }
   color: var(--fg);
 }
 
+/* =========================
+   Msg
+   ========================= */
 .msg{
   margin-top:12px;
   padding:10px 12px;
@@ -176,6 +335,9 @@ tbody tr:hover{ background: rgba(255,255,255,.03); }
   color: var(--fg);
 }
 
+/* =========================
+   Footer
+   ========================= */
 .footer{
   max-width:980px;
   margin:18px auto 30px;
@@ -183,6 +345,29 @@ tbody tr:hover{ background: rgba(255,255,255,.03); }
   font-size:12px;
 }
 
+/* =========================
+   Select / option contraste
+   ========================= */
+select{
+  background-color: rgba(0,0,0,.35);
+  color: var(--fg);
+  border: 1px solid var(--line);
+}
+
+select option{
+  background-color: #0b0f1a;
+  color: var(--fg);
+}
+
+select option:checked,
+select option:hover{
+  background-color: #22304a;
+  color: var(--fg);
+}
+
+/* =========================
+   Responsive
+   ========================= */
 @media (max-width: 760px){
   .grid2{ grid-template-columns: 1fr; }
   .span2{ grid-column: span 1; }
@@ -190,32 +375,149 @@ tbody tr:hover{ background: rgba(255,255,255,.03); }
   .span3{ grid-column: span 1; }
   .right{ text-align:left; }
 }
+
+
+/* PUBLIC */
+/* public.html — ajuste responsive topbar (si hace falta) */
+@media (max-width: 760px){
+  .topbar{
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .session{
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .right{ text-align:left; }
+}
+
+
+/* TIMELINE */
+
 /* =========================
-   SELECT / OPTION CONTRASTE
+   Play timeline — responsive (añadir al final)
    ========================= */
 
-/* Select cerrado */
-select{
-  background-color: rgba(0,0,0,.35);
-  color: var(--fg);
-  border: 1px solid var(--line);
+.timeline-wrap{
+  display:grid;
+  gap:12px;
+
+  /* mobile first: 1 columna */
+  grid-template-columns: 1fr;
+
+  /* no scroll horizontal por defecto */
+  overflow-x: visible;
 }
 
-/* Opciones desplegadas (importante) */
-select option{
-  background-color: #0b0f1a; /* mismo bg base */
-  color: var(--fg);
+/* Tarjeta día */
+.play-day{
+  border:1px solid var(--line);
+  border-radius:14px;
+  background: rgba(0,0,0,.14);
+  padding:12px;
 }
 
-/* Hover / seleccionado (según navegador) */
-select option:checked,
-select option:hover{
-  background-color: #22304a;
-  color: var(--fg);
+/* Header del día */
+.play-day-title{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:6px 10px;
+
+  padding-bottom:10px;
+  margin-bottom:12px;
+  border-bottom:1px solid var(--line);
 }
 
-/* Focus visible */
-select:focus{
-  border-color: rgba(47,107,255,.6);
-  box-shadow: 0 0 0 2px rgba(47,107,255,.25);
+/* Cuerpo del día */
+.play-day-body{
+  display:grid;
+  gap:10px;
+}
+
+/* Slot */
+.play-slot{
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.04);
+  border-radius:14px;
+  padding:10px;
+}
+
+/* Slot header: título + botón */
+.play-slot-head{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+
+  margin-bottom:8px;
+}
+
+/* Botón dentro del slot: no expandir */
+.play-slot .btn{
+  white-space: nowrap;
+  min-width: 92px;
+}
+
+/* Lista personas */
+.play-people{
+  margin:0;
+  padding-left:16px;
+}
+.play-people li{ margin:4px 0; }
+
+/* =========================
+   Breakpoints
+   ========================= */
+
+/* >= 520px: 2 columnas */
+@media (min-width: 520px){
+  .timeline-wrap{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* >= 820px: 3 columnas */
+@media (min-width: 820px){
+  .timeline-wrap{
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .play-day{ padding:14px; }
+}
+
+/* >= 1080px: 4 columnas */
+@media (min-width: 1080px){
+  .timeline-wrap{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* >= 1320px: 5 columnas */
+@media (min-width: 1320px){
+  .timeline-wrap{
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* >= 1540px: 7 columnas (semana completa si hay espacio) */
+@media (min-width: 1540px){
+  .timeline-wrap{
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}
+
+/* =========================
+   Ajustes extra para pantallas muy pequeñas
+   ========================= */
+@media (max-width: 380px){
+  .play-slot{
+    padding:9px;
+  }
+
+  .play-slot .btn{
+    width: 100%; /* botón a ancho completo si no cabe */
+  }
 }

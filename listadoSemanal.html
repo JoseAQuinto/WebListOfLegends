@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>List Of Legends · Play</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">LoL</div>
+      <div class="titles">
+        <h1>Organizar partidas</h1>
+        <p>Crea una semana y apunta tramos para jugar (sin registro)</p>
+      </div>
+    </div>
+
+    <div class="session">
+      <a href="./index.html" class="btn btn-ghost">Volver</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2>Nueva semana</h2>
+          <p class="muted">Crea una “timeline” para que la gente se apunte.</p>
+        </div>
+        <button id="btnRefreshWeeks" class="btn btn-ghost" type="button">Refrescar</button>
+      </div>
+
+      <form id="weekForm" class="grid3" autocomplete="off">
+        <label>
+          Semana (lunes)
+          <input id="weekStart" type="date" required />
+        </label>
+
+        <label>
+          Nombre
+          <input id="weekTitle" required placeholder="Ej: Flex con la peña" maxlength="60" />
+        </label>
+
+        <label>
+          Slug (URL)
+          <input id="weekSlug" required placeholder="ej: flex-pena-2026-02-02" maxlength="64" />
+        </label>
+
+        <label class="span3">
+          Descripción (opcional)
+          <input id="weekDesc" placeholder="Ej: Solo tardes, EUW, chill…" maxlength="140" />
+        </label>
+
+        <div class="row span3">
+          <button type="submit" class="btn">Crear</button>
+          <span id="weeksMsg" class="muted"></span>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Semanas</h2>
+      <p class="muted">Entra en una semana para ver la timeline y apuntarte.</p>
+
+      <div class="tablewrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Semana</th>
+              <th>Nombre</th>
+              <th>Slug</th>
+              <th>Zona</th>
+              <th class="right">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="weeksTbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer muted">
+    <span>List Of Legends · Play</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./listadoSemanal.js"></script>
+</body>
+</html>

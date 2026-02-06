@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>List Of Legends · Timeline</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">LoL</div>
+      <div class="titles">
+        <h1 id="weekTitleH1">Timeline semanal</h1>
+        <p id="weekSubtitle" class="muted">Cargando…</p>
+      </div>
+    </div>
+
+    <div class="session">
+      <a href="./listadoSemanal.html" class="btn btn-ghost">Volver</a>
+      <button id="btnRefreshDetail" class="btn btn-ghost" type="button">Refrescar</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2>Añadir tramo</h2>
+          <p class="muted">Crea un tramo horario para que otros se apunten.</p>
+        </div>
+      </div>
+
+      <form id="slotForm" class="grid3" autocomplete="off">
+        <label>
+          Día
+          <select id="slotDay"></select>
+        </label>
+
+        <label>
+          Desde
+          <input id="slotFrom" type="time" required />
+        </label>
+
+        <label>
+          Hasta
+          <input id="slotTo" type="time" required />
+        </label>
+
+        <label class="span3">
+          Nota (opcional)
+          <input id="slotNote" placeholder="Ej: disponible hasta las 22:30" maxlength="120" />
+        </label>
+
+        <div class="row span3">
+          <button type="submit" class="btn">Crear tramo</button>
+          <span id="detailMsg" class="muted"></span>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Timeline</h2>
+      <p class="muted">Haz clic en “Unirme” en un tramo. (Sin registro)</p>
+
+      <div id="timelineWrap" class="timeline-wrap"></div>
+    </section>
+
+    <section class="card">
+      <h2>Unirme (rápido)</h2>
+      <p class="muted">Se abrirá al pulsar “Unirme” en un tramo.</p>
+
+      <form id="joinForm" class="grid3 hidden" autocomplete="off">
+        <input type="hidden" id="joinSlotId" />
+
+        <label>
+          Tu nombre
+          <input id="joinName" required placeholder="Ej: Jose" maxlength="40" />
+        </label>
+
+        <label class="span3">
+          Nota (opcional)
+          <input id="joinNote" placeholder="Ej: puedo hasta las 21:30" maxlength="120" />
+        </label>
+
+        <div class="row span3">
+          <button type="submit" class="btn btn-secondary">Unirme</button>
+          <button id="btnJoinCancel" type="button" class="btn btn-ghost">Cancelar</button>
+          <span id="joinMsg" class="muted"></span>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer muted">
+    <span>List Of Legends · Timeline</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./listadoSemanal_Detail.js"></script>
+</body>
+</html>
