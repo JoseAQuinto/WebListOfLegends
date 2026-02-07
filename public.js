@@ -66,7 +66,11 @@ function renderPublic(rows) {
 
   if (!rows.length) {
     publicTbody.innerHTML = `
-      <tr><td colspan="5" class="muted">Todavía no hay cuentas compartidas.</td></tr>
+      <tr>
+        <td colspan="5" class="px-4 py-4 text-sm text-slate-500 dark:text-slate-400">
+          Todavía no hay cuentas compartidas.
+        </td>
+      </tr>
     `;
     return;
   }
@@ -74,17 +78,28 @@ function renderPublic(rows) {
   publicTbody.innerHTML = rows
     .map(
       (r) => `
-      <tr>
-        <td><strong>${escapeHtml(r.summoner_name)}</strong></td>
-        <td>${escapeHtml(r.tag_line || "")}</td>
-        <td>${escapeHtml(r.region || "")}</td>
-        <td>${escapeHtml(r.note || "")}</td>
-        <td>${escapeHtml(formatDate(r.created_at))}</td>
+      <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/30">
+        <td class="px-4 py-3 text-slate-700 dark:text-slate-200">
+          <strong>${escapeHtml(r.summoner_name)}</strong>
+        </td>
+        <td class="px-4 py-3 text-slate-700 dark:text-slate-200">
+          ${escapeHtml(r.tag_line || "")}
+        </td>
+        <td class="px-4 py-3 text-slate-700 dark:text-slate-200">
+          ${escapeHtml(r.region || "")}
+        </td>
+        <td class="px-4 py-3 text-slate-700 dark:text-slate-200">
+          ${escapeHtml(r.note || "")}
+        </td>
+        <td class="px-4 py-3 whitespace-nowrap text-slate-600 dark:text-slate-400">
+          ${escapeHtml(formatDate(r.created_at))}
+        </td>
       </tr>
     `
     )
     .join("");
 }
+
 
 publicForm?.addEventListener("submit", async (e) => {
   e.preventDefault();

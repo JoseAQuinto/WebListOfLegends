@@ -1,103 +1,278 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>List Of Legends · Timeline</title>
-  <link rel="stylesheet" href="./styles.css" />
-</head>
+<!DOCTYPE html>
+<html class="dark" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List of Legends | Timeline semanal</title>
 
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">LoL</div>
-      <div class="titles">
-        <h1 id="weekTitleH1">Timeline semanal</h1>
-        <p id="weekSubtitle" class="muted">Cargando…</p>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: { primary: "#0db9f2", "background-light": "#f5f8f8", "background-dark": "#0a0a0c" },
+            fontFamily: { display: ["Inter", "sans-serif"] },
+            borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .glow-effect {
+        position: absolute;
+        width: 520px;
+        height: 520px;
+        z-index: 0;
+        pointer-events: none;
+        filter: blur(2px);
+      }
+      .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 10px; }
+      .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+      .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148,163,184,.22); border-radius: 999px; }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(148,163,184,.35); }
+
+      /* gamer vibe: "neon border" suave en hover */
+      .neon-hover:hover {
+        box-shadow: 0 0 0 1px rgba(13,185,242,.25), 0 0 24px rgba(13,185,242,.10);
+      }
+      /* badge glow */
+      .badge-glow { box-shadow: 0 0 0 1px rgba(13,185,242,.20) inset; }
+    </style>
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen relative overflow-hidden flex flex-col">
+    <!-- Orbs -->
+    <div class="glow-effect top-[-18%] left-[-10%]" style="background: radial-gradient(circle, rgba(13,185,242,.12) 0%, rgba(13,185,242,0) 70%);"></div>
+    <div class="glow-effect bottom-[-18%] right-[-10%]" style="background: radial-gradient(circle, rgba(139,92,246,.10) 0%, rgba(139,92,246,0) 70%);"></div>
+
+    <!-- Header -->
+    <header class="relative z-10 w-full px-6 py-6 lg:px-12">
+      <div class="flex justify-between items-center">
+        <a href="./index.html" class="flex items-center gap-2">
+          <div class="bg-primary p-1.5 rounded-lg">
+            <svg class="w-6 h-6 text-background-dark" fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <path d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"></path>
+            </svg>
+          </div>
+          <span class="text-xl font-bold tracking-tight dark:text-white">List of Legends</span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-3">
+          <a href="./public.html" class="px-4 py-2 text-sm font-bold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cuentas compartidas</a>
+          <a href="./listadoSemanal.html" class="px-4 py-2 text-sm font-bold rounded-lg bg-primary text-background-dark hover:bg-primary/90 transition-colors">Organizar partidas</a>
+          <a href="./formulario.html" class="px-4 py-2 text-sm font-bold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Sugerencias</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a href="./listadoSemanal.html" class="px-4 py-2 text-sm font-bold border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Volver</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 relative z-10">
+      <div class="w-full max-w-[1500px] mx-auto px-4 pb-10">
+        <!-- Top card -->
+        <section class="glass-card rounded-2xl p-5 sm:p-6 shadow-2xl relative overflow-hidden neon-hover">
+          <div class="absolute top-0 right-0 -mr-20 -mt-20 w-44 h-44 bg-primary/10 rounded-full blur-3xl"></div>
+
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                  <span class="material-symbols-outlined text-[18px] text-primary">calendar_today</span>
+                  Weekly Sessions
+                </span>
+                <span id="weekTagToday" class="hidden text-[11px] font-bold px-2 py-1 rounded-lg bg-primary/10 text-primary badge-glow">
+                  Hoy
+                </span>
+              </div>
+
+              <h1 id="weekTitleH1" class="mt-1 text-2xl sm:text-3xl font-black truncate">Timeline semanal</h1>
+              <p id="weekSubtitle" class="text-sm text-slate-500 dark:text-slate-400 mt-1">Cargando…</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <button id="btnRefreshDetail" type="button"
+                class="px-4 py-2 text-sm font-bold border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                Refrescar
+              </button>
+
+              <button id="btnOpenCreateSlot" type="button"
+                class="px-5 py-2.5 text-sm font-bold rounded-lg bg-primary text-background-dark hover:bg-primary/90 transition-colors inline-flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">add</span>
+                Crear tramo
+              </button>
+
+              <span id="detailMsg" class="text-sm text-slate-500 dark:text-slate-400"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Calendar grid -->
+        <section class="mt-6">
+          <div class="custom-scrollbar overflow-x-auto pb-2">
+            <div id="timelineWrap" class="min-w-[1100px] grid grid-cols-7 gap-4"></div>
+          </div>
+
+          <div class="mt-4 text-xs text-slate-500 dark:text-slate-400">
+            Tip: pulsa <span class="font-bold text-slate-700 dark:text-slate-200">+</span> en un día para crear tramo rápido.
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="relative z-10 py-8 px-6 text-center">
+      <p class="text-[10px] text-slate-600 dark:text-slate-600 max-w-2xl mx-auto uppercase tracking-widest">
+        List Of Legends · Play
+      </p>
+    </footer>
+
+    <!-- Modal Crear tramo -->
+    <div id="createSlotModal" class="hidden fixed inset-0 z-[9999]">
+      <div id="createSlotBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+      <div class="absolute inset-0 grid place-items-center p-4">
+        <div class="w-full max-w-lg max-h-[90vh] overflow-auto glass-card rounded-2xl p-6 shadow-2xl neon-hover"
+          role="dialog" aria-modal="true" aria-labelledby="create-slot-title">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 id="create-slot-title" class="text-xl font-black">Crear tramo</h2>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Día, hora, modo y capacidad (opcional).</p>
+            </div>
+            <button id="btnCloseCreateSlot" type="button"
+              class="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-colors" aria-label="Cerrar">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <form id="slotForm" class="mt-6 space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Día</label>
+                <select id="slotDay"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"></select>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-sm font-medium mb-1.5">Desde</label>
+                  <input id="slotFrom" type="time" required
+                    class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"/>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1.5">Hasta</label>
+                  <input id="slotTo" type="time" required
+                    class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"/>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Modo</label>
+                <select id="slotMode"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
+                  <option value="ranked_solo">Ranked Solo/Duo</option>
+                  <option value="ranked_flex">Ranked Flex</option>
+                  <option value="aram">ARAM</option>
+                  <option value="normal">Normal</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1.5">Capacidad</label>
+                <input id="slotCapacity" type="number" min="2" max="10" value="5"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"/>
+                <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Por defecto 5.</div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1.5">Nota (opcional)</label>
+              <input id="slotNote" maxlength="140" placeholder="Ej: chill, duo, ganar LP…"
+                class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"/>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+              <button type="submit"
+                class="px-5 py-3 bg-primary hover:bg-primary/90 text-background-dark font-bold rounded-lg transition-transform active:scale-[0.98]">
+                Crear
+              </button>
+
+              <button id="btnCancelCreateSlot" type="button"
+                class="px-5 py-3 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors font-bold">
+                Cancelar
+              </button>
+
+              <span id="detailMsgInline" class="text-sm text-slate-500 dark:text-slate-400"></span>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
 
-    <div class="session">
-      <a href="./listadoSemanal.html" class="btn btn-ghost">Volver</a>
-      <button id="btnRefreshDetail" class="btn btn-ghost" type="button">Refrescar</button>
-    </div>
-  </header>
+    <!-- Modal Unirme -->
+    <div id="joinModal" class="hidden fixed inset-0 z-[9999]">
+      <div id="joinBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+      <div class="absolute inset-0 grid place-items-center p-4">
+        <div class="w-full max-w-lg max-h-[90vh] overflow-auto glass-card rounded-2xl p-6 shadow-2xl neon-hover"
+          role="dialog" aria-modal="true" aria-labelledby="join-title">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 id="join-title" class="text-xl font-black">Unirme</h2>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Apúntate con tu nick.</p>
+            </div>
+            <button id="btnJoinCloseX" type="button"
+              class="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-colors" aria-label="Cerrar">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
 
-  <main class="container">
-    <section class="card">
-      <div class="card-header">
-        <div>
-          <h2>Añadir tramo</h2>
-          <p class="muted">Crea un tramo horario para que otros se apunten.</p>
+          <form id="joinForm" class="mt-6 space-y-4">
+            <input type="hidden" id="joinSlotId" />
+            <div>
+              <label class="block text-sm font-medium mb-1.5">Nombre</label>
+              <input id="joinName" required maxlength="40" placeholder="Tu nick"
+                class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"/>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1.5">Nota (opcional)</label>
+              <input id="joinNote" maxlength="120" placeholder="Ej: juego supp"
+                class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"/>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+              <button type="submit"
+                class="px-5 py-3 bg-primary hover:bg-primary/90 text-background-dark font-bold rounded-lg transition-transform active:scale-[0.98]">
+                Confirmar
+              </button>
+
+              <button id="btnJoinCancel" type="button"
+                class="px-5 py-3 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors font-bold">
+                Cancelar
+              </button>
+
+              <span id="joinMsg" class="text-sm text-slate-500 dark:text-slate-400"></span>
+            </div>
+          </form>
         </div>
       </div>
+    </div>
 
-      <form id="slotForm" class="grid3" autocomplete="off">
-        <label>
-          Día
-          <select id="slotDay"></select>
-        </label>
-
-        <label>
-          Desde
-          <input id="slotFrom" type="time" required />
-        </label>
-
-        <label>
-          Hasta
-          <input id="slotTo" type="time" required />
-        </label>
-
-        <label class="span3">
-          Nota (opcional)
-          <input id="slotNote" placeholder="Ej: disponible hasta las 22:30" maxlength="120" />
-        </label>
-
-        <div class="row span3">
-          <button type="submit" class="btn">Crear tramo</button>
-          <span id="detailMsg" class="muted"></span>
-        </div>
-      </form>
-    </section>
-
-    <section class="card">
-      <h2>Timeline</h2>
-      <p class="muted">Haz clic en “Unirme” en un tramo. (Sin registro)</p>
-
-      <div id="timelineWrap" class="timeline-wrap"></div>
-    </section>
-
-    <section class="card">
-      <h2>Unirme (rápido)</h2>
-      <p class="muted">Se abrirá al pulsar “Unirme” en un tramo.</p>
-
-      <form id="joinForm" class="grid3 hidden" autocomplete="off">
-        <input type="hidden" id="joinSlotId" />
-
-        <label>
-          Tu nombre
-          <input id="joinName" required placeholder="Ej: Jose" maxlength="40" />
-        </label>
-
-        <label class="span3">
-          Nota (opcional)
-          <input id="joinNote" placeholder="Ej: puedo hasta las 21:30" maxlength="120" />
-        </label>
-
-        <div class="row span3">
-          <button type="submit" class="btn btn-secondary">Unirme</button>
-          <button id="btnJoinCancel" type="button" class="btn btn-ghost">Cancelar</button>
-          <span id="joinMsg" class="muted"></span>
-        </div>
-      </form>
-    </section>
-  </main>
-
-  <footer class="footer muted">
-    <span>List Of Legends · Timeline</span>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./listadoSemanal_Detail.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./listadoSemanal_Detail.js"></script>
+  </body>
 </html>

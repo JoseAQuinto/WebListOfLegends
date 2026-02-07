@@ -1,91 +1,327 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>List Of Legends · Play</title>
-  <link rel="stylesheet" href="./styles.css" />
-</head>
+<!DOCTYPE html>
+<html class="dark" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List of Legends | Organizar partidas</title>
 
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">LoL</div>
-      <div class="titles">
-        <h1>Organizar partidas</h1>
-        <p>Crea una semana y apunta tramos para jugar (sin registro)</p>
-      </div>
-    </div>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
 
-    <div class="session">
-      <a href="./index.html" class="btn btn-ghost">Volver</a>
-    </div>
-  </header>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#0db9f2",
+              "background-light": "#f5f8f8",
+              "background-dark": "#0a0a0c",
+            },
+            fontFamily: { display: ["Inter", "sans-serif"] },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
 
-  <main class="container">
-    <section class="card">
-      <div class="card-header">
-        <div>
-          <h2>Nueva semana</h2>
-          <p class="muted">Crea una “timeline” para que la gente se apunte.</p>
+    <style>
+      .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .glow-effect {
+        position: absolute;
+        width: 420px;
+        height: 420px;
+        z-index: 0;
+        pointer-events: none;
+      }
+    </style>
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen relative overflow-x-hidden flex flex-col"
+  >
+    <!-- Orbs -->
+    <div
+      class="glow-effect top-[-10%] left-[-5%]"
+      style="
+        background: radial-gradient(
+          circle,
+          rgba(13, 185, 242, 0.1) 0%,
+          rgba(13, 185, 242, 0) 70%
+        );
+      "
+    ></div>
+    <div
+      class="glow-effect bottom-[-10%] right-[-5%]"
+      style="
+        background: radial-gradient(
+          circle,
+          rgba(139, 92, 246, 0.1) 0%,
+          rgba(139, 92, 246, 0) 70%
+        );
+      "
+    ></div>
+
+    <!-- Header -->
+    <header class="relative z-10 w-full px-6 py-6 lg:px-12">
+      <div class="flex justify-between items-center">
+        <a href="./index.html" class="flex items-center gap-2">
+          <div class="bg-primary p-1.5 rounded-lg">
+            <svg
+              class="w-6 h-6 text-background-dark"
+              fill="currentColor"
+              viewBox="0 0 48 48"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-xl font-bold tracking-tight dark:text-white"
+            >List of Legends</span
+          >
+        </a>
+
+        <!-- Desktop nav -->
+        <nav class="hidden md:flex items-center gap-3">
+          <a
+            href="./public.html"
+            class="px-4 py-2 text-sm font-bold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >Cuentas compartidas</a
+          >
+          <a
+            href="./listadoSemanal.html"
+            class="px-4 py-2 text-sm font-bold rounded-lg bg-primary text-background-dark hover:bg-primary/90 transition-colors"
+            >Organizar partidas</a
+          >
+          <a
+            href="./formulario.html"
+            class="px-4 py-2 text-sm font-bold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >Sugerencias</a
+          >
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <!-- Mobile menu -->
+          <button
+            id="btnMobileMenu"
+            type="button"
+            class="md:hidden px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-expanded="false"
+            aria-controls="mobileMenu"
+            aria-label="Abrir menú"
+          >
+            <span class="material-symbols-outlined text-[20px]">menu</span>
+          </button>
+
+          <a
+            href="./index.html"
+            class="hidden sm:inline px-4 py-2 text-sm font-bold border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >Volver</a
+          >
         </div>
-        <button id="btnRefreshWeeks" class="btn btn-ghost" type="button">Refrescar</button>
       </div>
 
-      <form id="weekForm" class="grid3" autocomplete="off">
-        <label>
-          Semana (lunes)
-          <input id="weekStart" type="date" required />
-        </label>
-
-        <label>
-          Nombre
-          <input id="weekTitle" required placeholder="Ej: Flex con la peña" maxlength="60" />
-        </label>
-
-        <label>
-          Slug (URL)
-          <input id="weekSlug" required placeholder="ej: flex-pena-2026-02-02" maxlength="64" />
-        </label>
-
-        <label class="span3">
-          Descripción (opcional)
-          <input id="weekDesc" placeholder="Ej: Solo tardes, EUW, chill…" maxlength="140" />
-        </label>
-
-        <div class="row span3">
-          <button type="submit" class="btn">Crear</button>
-          <span id="weeksMsg" class="muted"></span>
+      <!-- Mobile menu -->
+      <div id="mobileMenu" class="md:hidden hidden mt-4">
+        <div class="glass-card rounded-xl p-3">
+          <div class="flex flex-col gap-1">
+            <a
+              class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+              href="./public.html"
+              >Cuentas compartidas</a
+            >
+            <a
+              class="px-3 py-2 rounded-lg text-sm font-medium bg-primary/10 text-primary"
+              href="./listadoSemanal.html"
+              >Organizar partidas</a
+            >
+            <a
+              class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+              href="./formulario.html"
+              >Sugerencias</a
+            >
+            <a
+              class="mt-2 px-3 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+              href="./index.html"
+              >Volver</a
+            >
+          </div>
         </div>
-      </form>
-    </section>
-
-    <section class="card">
-      <h2>Semanas</h2>
-      <p class="muted">Entra en una semana para ver la timeline y apuntarte.</p>
-
-      <div class="tablewrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Semana</th>
-              <th>Nombre</th>
-              <th>Slug</th>
-              <th>Zona</th>
-              <th class="right">Acción</th>
-            </tr>
-          </thead>
-          <tbody id="weeksTbody"></tbody>
-        </table>
       </div>
-    </section>
-  </main>
+    </header>
 
-  <footer class="footer muted">
-    <span>List Of Legends · Play</span>
-  </footer>
+    <main class="flex-1 p-4 relative z-10">
+      <div class="w-full max-w-[1100px] mx-auto space-y-6">
+        <!-- Crear semana -->
+        <section
+          class="glass-card rounded-xl p-6 sm:p-8 shadow-2xl relative overflow-hidden"
+        >
+          <div
+            class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-primary/10 rounded-full blur-3xl"
+          ></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./listadoSemanal.js"></script>
-</body>
+          <div class="flex items-start justify-between gap-4 mb-6">
+            <div>
+              <h1 class="text-2xl font-black">Organizar partidas</h1>
+              <p class="text-sm text-slate-500 dark:text-slate-400">
+                Crea una semana y apunta tramos para jugar (sin registro).
+              </p>
+            </div>
+
+            <button
+              id="btnRefreshWeeks"
+              type="button"
+              class="px-4 py-2 text-sm font-bold border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              Refrescar
+            </button>
+          </div>
+
+          <div class="mb-5">
+            <h2 class="text-xl font-bold">Nueva semana</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+              Crea una “timeline” para que la gente se apunte.
+            </p>
+          </div>
+
+          <form id="weekForm" class="space-y-4" autocomplete="off">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label
+                  class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700"
+                  >Semana (lunes)</label
+                >
+                <input
+                  id="weekStart"
+                  type="date"
+                  required
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700"
+                  >Nombre</label
+                >
+                <input
+                  id="weekTitle"
+                  required
+                  maxlength="60"
+                  placeholder="Ej: Flex con la peña"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700"
+                  >Slug (URL)</label
+                >
+                <input
+                  id="weekSlug"
+                  required
+                  maxlength="64"
+                  placeholder="ej: flex-pena-2026-02-02"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+
+              <div class="md:col-span-3">
+                <label
+                  class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700"
+                  >Descripción (opcional)</label
+                >
+                <input
+                  id="weekDesc"
+                  maxlength="140"
+                  placeholder="Ej: Solo tardes, EUW, chill…"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+              <button
+                type="submit"
+                class="px-5 py-3 bg-primary hover:bg-primary/90 text-background-dark font-bold rounded-lg transition-transform active:scale-[0.98]"
+              >
+                Crear
+              </button>
+
+              <span id="weeksMsg" class="text-sm text-slate-500 dark:text-slate-400"></span>
+            </div>
+          </form>
+        </section>
+
+        <!-- Lista semanas -->
+        <section
+          class="glass-card rounded-xl p-6 sm:p-8 shadow-2xl relative overflow-hidden"
+        >
+          <div
+            class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-primary/10 rounded-full blur-3xl"
+          ></div>
+
+          <div class="mb-5">
+            <h2 class="text-xl font-bold">Semanas</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+              Entra en una semana para ver la timeline y apuntarte.
+            </p>
+          </div>
+
+          <!-- Aquí el JS pinta cards dentro -->
+          <div id="weeksTbody" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="relative z-10 py-8 px-6 text-center">
+      <p
+        class="text-[10px] text-slate-600 dark:text-slate-600 max-w-2xl mx-auto uppercase tracking-widest"
+      >
+        List Of Legends · Play
+      </p>
+    </footer>
+
+    <script>
+      (function () {
+        const btn = document.getElementById("btnMobileMenu");
+        const menu = document.getElementById("mobileMenu");
+        if (!btn || !menu) return;
+
+        btn.addEventListener("click", () => {
+          const isOpen = !menu.classList.contains("hidden");
+          menu.classList.toggle("hidden", isOpen);
+          btn.setAttribute("aria-expanded", String(!isOpen));
+          btn.setAttribute("aria-label", !isOpen ? "Cerrar menú" : "Abrir menú");
+          const icon = btn.querySelector(".material-symbols-outlined");
+          if (icon) icon.textContent = !isOpen ? "close" : "menu";
+        });
+      })();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./listadoSemanal.js"></script>
+  </body>
 </html>

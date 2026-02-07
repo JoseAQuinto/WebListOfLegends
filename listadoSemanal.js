@@ -82,7 +82,9 @@ function renderWeeks(rows) {
 
   if (!rows.length) {
     weeksTbody.innerHTML = `
-      <tr><td colspan="5" class="muted">Todavía no hay semanas creadas.</td></tr>
+      <div class="px-4 py-4 text-sm text-slate-500 dark:text-slate-400">
+        Todavía no hay semanas creadas.
+      </div>
     `;
     return;
   }
@@ -90,20 +92,48 @@ function renderWeeks(rows) {
   weeksTbody.innerHTML = rows
     .map((w) => {
       const url = `listadoSemanal_Detail.html?week=${encodeURIComponent(w.slug)}`;
+
       return `
-        <tr>
-          <td><strong>${escapeHtml(fmtWeekStart(w.week_start))}</strong></td>
-          <td>${escapeHtml(w.title)}</td>
-          <td class="muted">${escapeHtml(w.slug)}</td>
-          <td class="muted">${escapeHtml(w.timezone || "")}</td>
-          <td class="right">
-            <a class="btn btn-ghost" href="${url}">Abrir</a>
-          </td>
-        </tr>
+        <article class="bg-white dark:bg-slate-950/30 border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-primary/50 transition-all shadow-sm">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <div class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                Semana ${escapeHtml(fmtWeekStart(w.week_start))}
+              </div>
+              <h3 class="mt-1 text-lg font-black truncate">
+                ${escapeHtml(w.title)}
+              </h3>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <span class="text-[11px] font-semibold px-2 py-1 rounded-lg bg-primary/10 text-primary">
+                  ${escapeHtml(w.timezone || "Europe/Madrid")}
+                </span>
+                <span class="text-[11px] font-semibold px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-900/60 text-slate-700 dark:text-slate-200">
+                  ${escapeHtml(w.slug)}
+                </span>
+              </div>
+            </div>
+
+            <a
+              href="${url}"
+              class="shrink-0 px-4 py-2 text-sm font-bold rounded-lg bg-primary text-background-dark hover:bg-primary/90 transition-colors"
+            >
+              Abrir
+            </a>
+          </div>
+
+          <div class="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <span>Entrar para ver la timeline</span>
+            <span class="inline-flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+              ${escapeHtml(fmtWeekStart(w.week_start))}
+            </span>
+          </div>
+        </article>
       `;
     })
     .join("");
 }
+
 
 weekTitle?.addEventListener("input", () => {
   if (!weekSlug) return;

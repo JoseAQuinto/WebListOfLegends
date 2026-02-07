@@ -51,29 +51,52 @@ function urgencyLabel(u) {
   return "Normal";
 }
 
+function urgencyPill(u) {
+  if (u === "urgente") {
+    return `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border border-red-500/30 bg-red-500/10 text-red-300">Urgente</span>`;
+  }
+  if (u === "poco_importante") {
+    return `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-500/30 bg-slate-500/10 text-slate-300">Poco importante</span>`;
+  }
+  return `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border border-emerald-500/30 bg-emerald-500/10 text-emerald-300">Normal</span>`;
+}
+
 function renderList(rows) {
   if (!suggestTbody) return;
 
   if (!rows?.length) {
     suggestTbody.innerHTML = `
       <tr>
-        <td colspan="4" class="muted">No hay sugerencias todavía.</td>
+        <td colspan="4" class="px-4 py-4 text-sm text-slate-500 dark:text-slate-400">
+          No hay sugerencias todavía.
+        </td>
       </tr>
     `;
     return;
   }
 
   suggestTbody.innerHTML = rows
-    .map((r) => `
-      <tr>
-        <td>${escapeHtml(fmtDate(r.created_at))}</td>
-        <td>${escapeHtml(urgencyLabel(r.urgency))}</td>
-        <td>${escapeHtml(r.title || "")}</td>
-        <td>${escapeHtml(r.message || "")}</td>
+    .map(
+      (r) => `
+      <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/30">
+        <td class="px-4 py-3 whitespace-nowrap text-slate-700 dark:text-slate-200">
+          ${escapeHtml(fmtDate(r.created_at))}
+        </td>
+        <td class="px-4 py-3">
+          ${urgencyPill(r.urgency)}
+        </td>
+        <td class="px-4 py-3 text-slate-700 dark:text-slate-200">
+          ${escapeHtml(r.title || "")}
+        </td>
+        <td class="px-4 py-3 text-slate-700 dark:text-slate-200">
+          ${escapeHtml(r.message || "")}
+        </td>
       </tr>
-    `)
+    `
+    )
     .join("");
 }
+
 
 async function loadSuggestions() {
   setListMsg("Cargando…");

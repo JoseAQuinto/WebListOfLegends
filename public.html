@@ -1,109 +1,340 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>List Of Legends · Cuentas compartidas</title>
+<!DOCTYPE html>
+<html class="dark" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List of Legends | Cuentas compartidas</title>
 
-  <link rel="stylesheet" href="./styles.css" />
-</head>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
 
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">LoL</div>
-      <div class="titles">
-        <h1>Cuentas compartidas</h1>
-        <p>Entra sin registrarte y añade una cuenta (no se puede editar ni borrar)</p>
-      </div>
-    </div>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#0db9f2",
+              "background-light": "#f5f8f8",
+              "background-dark": "#0a0a0c",
+            },
+            fontFamily: { display: ["Inter", "sans-serif"] },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
 
-    <div class="session">
-      <a href="./index.html" class="btn btn-ghost">Volver</a>
-    </div>
-  </header>
+    <style>
+      .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .glow-effect {
+        position: absolute;
+        width: 420px;
+        height: 420px;
+        z-index: 0;
+        pointer-events: none;
+      }
+    </style>
 
-  <main class="container">
-    <section class="card">
-      <div class="card-header">
-        <div>
-          <h2>Añadir cuenta</h2>
-          <p class="muted">Se guardará en la lista pública.</p>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen relative overflow-x-hidden flex flex-col"
+  >
+    <!-- Background Orbs -->
+    <div
+      class="glow-effect top-[-10%] left-[-5%]"
+      style="
+        background: radial-gradient(
+          circle,
+          rgba(13, 185, 242, 0.1) 0%,
+          rgba(13, 185, 242, 0) 70%
+        );
+      "
+    ></div>
+    <div
+      class="glow-effect bottom-[-10%] right-[-5%]"
+      style="
+        background: radial-gradient(
+          circle,
+          rgba(139, 92, 246, 0.1) 0%,
+          rgba(139, 92, 246, 0) 70%
+        );
+      "
+    ></div>
+
+    <!-- Header -->
+    <header class="relative z-10 w-full px-6 py-6 lg:px-12">
+      <div class="flex justify-between items-center">
+        <a href="./index.html" class="flex items-center gap-2">
+          <div class="bg-primary p-1.5 rounded-lg">
+            <svg
+              class="w-6 h-6 text-background-dark"
+              fill="currentColor"
+              viewBox="0 0 48 48"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-xl font-bold tracking-tight dark:text-white">List of Legends</span>
+        </a>
+
+        <!-- Desktop nav (botones) -->
+        <nav class="hidden md:flex items-center gap-3">
+          <a
+            href="./public.html"
+            class="px-4 py-2 text-sm font-bold rounded-lg bg-primary text-background-dark hover:bg-primary/90 transition-colors"
+          >
+            Cuentas compartidas
+          </a>
+          <a
+            href="./listadoSemanal.html"
+            class="px-4 py-2 text-sm font-bold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            Organizar partidas
+          </a>
+          <a
+            href="./formulario.html"
+            class="px-4 py-2 text-sm font-bold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            Sugerencias
+          </a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <!-- Menú móvil -->
+          <button
+            id="btnMobileMenu"
+            type="button"
+            class="md:hidden px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-expanded="false"
+            aria-controls="mobileMenu"
+            aria-label="Abrir menú"
+          >
+            <span class="material-symbols-outlined text-[20px]">menu</span>
+          </button>
+
+          <!-- Volver -->
+          <a
+            href="./index.html"
+            class="hidden sm:inline px-4 py-2 text-sm font-bold border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            Volver
+          </a>
         </div>
-        <button id="btnRefreshPublic" class="btn btn-ghost" type="button">Refrescar</button>
       </div>
 
-      <form id="publicForm" class="grid3" autocomplete="off">
-        <label>
-          Summoner
-          <input id="publicSummoner" required placeholder="NombreInvocador" />
-        </label>
-
-        <label>
-          Tag (opcional)
-          <input id="publicTag" placeholder="EUW / 1234 / etc." />
-        </label>
-
-        <label>
-          Región
-          <select id="publicRegion">
-            <option>EUW</option><option>EUNE</option><option>NA</option><option>KR</option>
-            <option>BR</option><option>LAN</option><option>LAS</option><option>OCE</option>
-            <option>TR</option><option>RU</option><option>JP</option><option>PH</option>
-            <option>SG</option><option>TH</option><option>TW</option><option>VN</option>
-          </select>
-        </label>
-
-        <label class="span3">
-          Nota (opcional)
-          <input id="publicNote" placeholder="rol, elo, duo, lo que sea…" />
-        </label>
-
-        <!-- Honeypot -->
-        <input
-          id="hpField"
-          type="text"
-          autocomplete="off"
-          tabindex="-1"
-          style="position:absolute; left:-9999px; opacity:0;"
-        />
-
-        <div class="row span3">
-          <button type="submit" class="btn">Enviar</button>
-          <span id="publicMsg" class="muted"></span>
+      <!-- Mobile menu -->
+      <div id="mobileMenu" class="md:hidden hidden mt-4">
+        <div class="glass-card rounded-xl p-3">
+          <div class="flex flex-col gap-1">
+            <a class="px-3 py-2 rounded-lg text-sm font-medium bg-primary/10 text-primary" href="./public.html">
+              Cuentas compartidas
+            </a>
+            <a
+              class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+              href="./listadoSemanal.html"
+            >
+              Organizar partidas
+            </a>
+            <a
+              class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+              href="./formulario.html"
+            >
+              Sugerencias
+            </a>
+            <a
+              class="mt-2 px-3 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+              href="./index.html"
+            >
+              Volver
+            </a>
+          </div>
         </div>
-      </form>
-    </section>
-
-    <section class="card">
-      <h2>Lista</h2>
-      <p class="muted">Últimas cuentas compartidas.</p>
-
-      <div class="tablewrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Summoner</th>
-              <th>Tag</th>
-              <th>Región</th>
-              <th>Nota</th>
-              <th>Fecha</th>
-            </tr>
-          </thead>
-          <tbody id="publicTbody"></tbody>
-        </table>
       </div>
-    </section>
-  </main>
+    </header>
 
-  <footer class="footer muted">
-    <span>List Of Legends · Public list</span>
-  </footer>
+    <main class="flex-1 p-4 relative z-10">
+      <div class="w-full max-w-[1100px] mx-auto space-y-6">
+        <!-- Card: añadir cuenta -->
+        <section class="glass-card rounded-xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
 
-  <!-- Supabase JS (v2) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+          <div class="flex items-start justify-between gap-4 mb-6">
+            <div>
+              <h1 class="text-2xl font-black">Cuentas compartidas</h1>
+              <p class="text-sm text-slate-500 dark:text-slate-400">
+                Entra sin registrarte y añade una cuenta (no se puede editar ni borrar).
+              </p>
+            </div>
 
-  <!-- Tu JS externo -->
-  <script src="./public.js"></script>
-</body>
+            <button
+              id="btnRefreshPublic"
+              type="button"
+              class="px-4 py-2 text-sm font-bold border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              Refrescar
+            </button>
+          </div>
+
+          <div class="mb-5">
+            <h2 class="text-xl font-bold">Añadir cuenta</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+              Se guardará en la lista pública.
+            </p>
+          </div>
+
+          <form id="publicForm" class="space-y-4" autocomplete="off">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700">
+                  Summoner
+                </label>
+                <input
+                  id="publicSummoner"
+                  required
+                  placeholder="NombreInvocador"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700">
+                  Tag (opcional)
+                </label>
+                <input
+                  id="publicTag"
+                  placeholder="EUW / 1234 / etc."
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700">
+                  Región
+                </label>
+                <select
+                  id="publicRegion"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                >
+                  <option>EUW</option><option>EUNE</option><option>NA</option><option>KR</option>
+                  <option>BR</option><option>LAN</option><option>LAS</option><option>OCE</option>
+                  <option>TR</option><option>RU</option><option>JP</option><option>PH</option>
+                  <option>SG</option><option>TH</option><option>TW</option><option>VN</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-3">
+                <label class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700">
+                  Nota (opcional)
+                </label>
+                <input
+                  id="publicNote"
+                  placeholder="rol, elo, duo, lo que sea…"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+            </div>
+
+            <!-- Honeypot -->
+            <input
+              id="hpField"
+              type="text"
+              autocomplete="off"
+              tabindex="-1"
+              style="position:absolute; left:-9999px; opacity:0;"
+            />
+
+            <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+              <button
+                type="submit"
+                class="px-5 py-3 bg-primary hover:bg-primary/90 text-background-dark font-bold rounded-lg transition-transform active:scale-[0.98]"
+              >
+                Enviar
+              </button>
+
+              <span id="publicMsg" class="text-sm text-slate-500 dark:text-slate-400"></span>
+            </div>
+          </form>
+        </section>
+
+        <!-- Card: lista -->
+        <section class="glass-card rounded-xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+
+          <div class="mb-5">
+            <h2 class="text-xl font-bold">Lista</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+              Últimas cuentas compartidas.
+            </p>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+            <table class="min-w-full text-sm">
+              <thead class="bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400">
+                <tr>
+                  <th class="text-left px-4 py-3 font-semibold">Summoner</th>
+                  <th class="text-left px-4 py-3 font-semibold">Tag</th>
+                  <th class="text-left px-4 py-3 font-semibold">Región</th>
+                  <th class="text-left px-4 py-3 font-semibold">Nota</th>
+                  <th class="text-left px-4 py-3 font-semibold whitespace-nowrap">Fecha</th>
+                </tr>
+              </thead>
+              <tbody
+                id="publicTbody"
+                class="divide-y divide-slate-200 dark:divide-slate-800"
+              ></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="relative z-10 py-8 px-6 text-center">
+      <p class="text-[10px] text-slate-600 dark:text-slate-600 max-w-2xl mx-auto uppercase tracking-widest">
+        List Of Legends · Public list
+      </p>
+    </footer>
+
+    <script>
+      (function () {
+        const btn = document.getElementById("btnMobileMenu");
+        const menu = document.getElementById("mobileMenu");
+        if (!btn || !menu) return;
+
+        btn.addEventListener("click", () => {
+          const isOpen = !menu.classList.contains("hidden");
+          menu.classList.toggle("hidden", isOpen);
+          btn.setAttribute("aria-expanded", String(!isOpen));
+          btn.setAttribute("aria-label", !isOpen ? "Cerrar menú" : "Abrir menú");
+          const icon = btn.querySelector(".material-symbols-outlined");
+          if (icon) icon.textContent = !isOpen ? "close" : "menu";
+        });
+      })();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./public.js"></script>
+  </body>
 </html>

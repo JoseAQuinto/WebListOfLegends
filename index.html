@@ -1,225 +1,539 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE html>
+<html class="dark" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List of Legends | Login</title>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>List Of Legends</title>
-  <link rel="stylesheet" href="./styles.css" />
-</head>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
 
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">LoL</div>
-      <div class="titles">
-        <h1>List Of Legends</h1>
-        <p>Guarda tus cuentas de League of Legends (sin build)</p>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#0db9f2",
+              "background-light": "#f5f8f8",
+              "background-dark": "#0a0a0c",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .glow-effect {
+        position: absolute;
+        width: 420px;
+        height: 420px;
+        background: radial-gradient(
+          circle,
+          rgba(13, 185, 242, 0.15) 0%,
+          rgba(13, 185, 242, 0) 70%
+        );
+        z-index: 0;
+        pointer-events: none;
+      }
+    </style>
+
+    <!-- Si quieres mantener tu CSS global, déjalo. Si no, lo puedes quitar. -->
+    <!-- <link rel="stylesheet" href="./styles.css" /> -->
+  </head>
+
+  <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen relative overflow-x-hidden flex flex-col">
+
+    <!-- Background Orbs -->
+    <div
+      class="glow-effect top-[-10%] left-[-5%]"
+      style="
+        background: radial-gradient(
+          circle,
+          rgba(13, 185, 242, 0.1) 0%,
+          rgba(13, 185, 242, 0) 70%
+        );
+      "
+    ></div>
+    <div
+      class="glow-effect bottom-[-10%] right-[-5%]"
+      style="
+        background: radial-gradient(
+          circle,
+          rgba(139, 92, 246, 0.1) 0%,
+          rgba(139, 92, 246, 0) 70%
+        );
+      "
+    ></div>
+
+    <!-- Header -->
+   <header class="relative z-10 w-full px-6 py-6 lg:px-12">
+  <div class="flex justify-between items-center">
+    <div class="flex items-center gap-2">
+      <div class="bg-primary p-1.5 rounded-lg">
+        <svg
+          class="w-6 h-6 text-background-dark"
+          fill="currentColor"
+          viewBox="0 0 48 48"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
+          ></path>
+        </svg>
       </div>
+      <span class="text-xl font-bold tracking-tight dark:text-white">List of Legends</span>
     </div>
 
-    <div class="session">
-      <a href="./public.html" class="btn btn-secondary">Cuentas compartidas</a>
-      <a href="./listadoSemanal.html" class="btn btn-ghost">Organizar partidas</a>
-      <a href="./formulario.html" class="btn btn-ghost">Sugerencias</a>
+    <!-- Desktop nav -->
+    <nav class="hidden md:flex items-center gap-8">
+      <a class="text-sm font-medium hover:text-primary transition-colors" href="./public.html">
+        Cuentas compartidas
+      </a>
+      <a class="text-sm font-medium hover:text-primary transition-colors" href="./listadoSemanal.html">
+        Organizar partidas
+      </a>
+      <a class="text-sm font-medium hover:text-primary transition-colors" href="./formulario.html">
+        Sugerencias
+      </a>
+    </nav>
 
-      <span id="userEmail" class="muted"></span>
-      <button id="btnLogout" class="btn btn-ghost hidden">Salir</button>
+    <div class="flex items-center gap-3">
+      <!-- Botón menú móvil -->
+      <button
+        id="btnMobileMenu"
+        type="button"
+        class="md:hidden px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        aria-expanded="false"
+        aria-controls="mobileMenu"
+        aria-label="Abrir menú"
+      >
+        <span class="material-symbols-outlined text-[20px]">menu</span>
+      </button>
+
+      <!-- user + logout -->
+      <span
+        id="userEmail"
+        class="hidden sm:inline text-xs text-slate-500 dark:text-slate-400"
+      ></span>
+
+      <button
+        id="btnLogout"
+        class="hidden px-4 py-2 text-sm font-bold border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        type="button"
+      >
+        Salir
+      </button>
     </div>
+  </div>
 
-  </header>
+  <!-- Mobile menu (siempre accesible en móvil) -->
+  <div id="mobileMenu" class="md:hidden hidden mt-4">
+    <div class="glass-card rounded-xl p-3">
+      <div class="flex flex-col gap-1">
+        <a
+          class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+          href="./public.html"
+        >
+          Cuentas compartidas
+        </a>
+        <a
+          class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+          href="./listadoSemanal.html"
+        >
+          Organizar partidas
+        </a>
+        <a
+          class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+          href="./formulario.html"
+        >
+          Sugerencias
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
 
-  <main class="container">
-    <!-- Auth -->
-    <section id="authCard" class="card">
-      <h2>Acceso</h2>
-      <p class="muted">Inicia sesión o crea una cuenta para guardar tus listas.</p>
+<script>
+  (function () {
+    const btn = document.getElementById("btnMobileMenu");
+    const menu = document.getElementById("mobileMenu");
+    if (!btn || !menu) return;
 
-      <form id="authForm" class="grid2">
-        <label>
-          Email
-          <input id="authEmail" type="email" autocomplete="email" required placeholder="tu@email.com" />
-        </label>
-        <label>
-          Password
-          <input id="authPassword" type="password" autocomplete="current-password" required placeholder="••••••••" />
-        </label>
+    btn.addEventListener("click", () => {
+      const isOpen = !menu.classList.contains("hidden");
+      menu.classList.toggle("hidden", isOpen);
+      btn.setAttribute("aria-expanded", String(!isOpen));
+      btn.setAttribute("aria-label", !isOpen ? "Cerrar menú" : "Abrir menú");
+      const icon = btn.querySelector(".material-symbols-outlined");
+      if (icon) icon.textContent = !isOpen ? "close" : "menu";
+    });
+  })();
+</script>
 
-        <div class="row span2">
-          <button id="btnSignIn" type="submit" class="btn">Entrar</button>
-          <button id="btnSignUp" type="button" class="btn btn-secondary">Crear cuenta</button>
-        </div>
-      </form>
 
-      <div id="authMsg" class="msg hidden"></div>
-    </section>
+    <main
+      class="flex-1 flex flex-col items-center justify-center p-4 relative z-10"
+    >
+      <div class="w-full max-w-[960px]">
+        <!-- =========================
+             AUTH CARD (IDs antiguos)
+             ========================= -->
+        <section
+          id="authCard"
+          class="glass-card rounded-xl p-8 shadow-2xl relative overflow-hidden"
+        >
+          <div
+            class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-primary/10 rounded-full blur-3xl"
+          ></div>
 
-    <!-- App -->
-    <section id="appCard" class="card hidden">
+          <div class="mb-8 text-center">
+            <h1 class="text-3xl font-black mb-2 dark:text-white text-slate-900">
+              Welcome back, Summoner.
+            </h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm">
+              Log in to manage your accounts and organize your next session.
+            </p>
+          </div>
 
-      <!-- =========================
-           Compartir mi lista (DESACTIVADO)
-           =========================
-      <div class="card" style="margin-bottom:16px">
-        <h2>Compartir mi lista</h2>
-        <p class="muted">
-          Elige tu código y compártelo con amigos.
-          Solo se verán las cuentas que marques como públicas.
-        </p>
+          <!-- OJO: mantenemos form + ids -->
+          <form id="authForm" class="space-y-5">
+            <div>
+              <label
+                class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700"
+                >Email</label
+              >
+              <div class="relative">
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]"
+                  >mail</span
+                >
+                <input
+                  id="authEmail"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  placeholder="name@example.com"
+                  class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+            </div>
 
-        <div class="row">
-          <input id="myCodeInput" placeholder="mi-codigo" style="max-width:260px" />
-          <button id="btnSaveMyCode" type="button" class="btn btn-secondary">
-            Guardar código
-          </button>
-          <button id="btnCopyLink" type="button" class="btn btn-ghost">
-            Copiar enlace
-          </button>
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label
+                  class="block text-sm font-medium dark:text-slate-300 text-slate-700"
+                  >Password</label
+                >
+                <!-- (si luego lo implementas) -->
+                <a class="text-xs text-primary hover:underline" href="#"
+                  >Forgot password?</a
+                >
+              </div>
+
+              <div class="relative">
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]"
+                  >lock</span
+                >
+                <input
+                  id="authPassword"
+                  type="password"
+                  autocomplete="current-password"
+                  required
+                  placeholder="••••••••"
+                  class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+            </div>
+
+            <!-- Botones: IDs antiguos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <button
+                id="btnSignIn"
+                type="submit"
+                class="w-full py-3.5 bg-primary hover:bg-primary/90 text-background-dark font-bold rounded-lg transition-transform active:scale-[0.98] flex items-center justify-center gap-2"
+              >
+                <span>Enter the Rift</span>
+                <span class="material-symbols-outlined text-[18px]">login</span>
+              </button>
+
+              <button
+                id="btnSignUp"
+                type="button"
+                class="w-full py-3.5 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors font-bold"
+              >
+                Create account
+              </button>
+            </div>
+          </form>
+
+          <!-- Mensaje auth (ID antiguo) -->
+          <div
+            id="authMsg"
+            class="hidden mt-5 text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 px-4 py-3 text-slate-700 dark:text-slate-200"
+          ></div>
+
+          <div
+            class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 text-center"
+          >
+            <p class="text-sm text-slate-500">
+              New to the platform?
+              <a class="text-primary font-bold hover:underline ml-1" href="#"
+                >Create Account</a
+              >
+            </p>
+          </div>
+        </section>
+
+        <!-- =========================
+             APP CARD (IDs antiguos)
+             ========================= -->
+        <section
+          id="appCard"
+          class="hidden mt-8 glass-card rounded-xl p-6 sm:p-8 shadow-2xl relative overflow-hidden"
+        >
+          <div
+            class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-primary/10 rounded-full blur-3xl"
+          ></div>
+
+          <div class="flex items-start justify-between gap-4 mb-6">
+            <div>
+              <h2 class="text-xl font-bold">Mis cuentas</h2>
+              <p class="text-sm text-slate-500 dark:text-slate-400">
+                Se guardan en tu Supabase (solo tú las ves).
+              </p>
+            </div>
+
+            <button
+              id="btnRefresh"
+              type="button"
+              class="px-4 py-2 text-sm font-bold border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              Refrescar
+            </button>
+          </div>
+
+          <!-- Form (IDs antiguos) -->
+          <form id="accountForm" class="space-y-4">
+            <input type="hidden" id="editId" />
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label
+                  class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700"
+                  >Summoner</label
+                >
+                <input
+                  id="summonerName"
+                  required
+                  placeholder="NombreInvocador"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700"
+                  >Tag (opcional)</label
+                >
+                <input
+                  id="tagLine"
+                  placeholder="EUW / 1234 / etc."
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700"
+                  >Elo</label
+                >
+                <select
+                  id="elo"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                >
+                  <option value="">(Sin elo)</option>
+                  <option>IRON 4</option>
+                  <option>IRON 3</option>
+                  <option>IRON 2</option>
+                  <option>IRON 1</option>
+                  <option>BRONZE 4</option>
+                  <option>BRONZE 3</option>
+                  <option>BRONZE 2</option>
+                  <option>BRONZE 1</option>
+                  <option>SILVER 4</option>
+                  <option>SILVER 3</option>
+                  <option>SILVER 2</option>
+                  <option>SILVER 1</option>
+                  <option>GOLD 4</option>
+                  <option>GOLD 3</option>
+                  <option>GOLD 2</option>
+                  <option>GOLD 1</option>
+                  <option>PLATINUM 4</option>
+                  <option>PLATINUM 3</option>
+                  <option>PLATINUM 2</option>
+                  <option>PLATINUM 1</option>
+                  <option>EMERALD 4</option>
+                  <option>EMERALD 3</option>
+                  <option>EMERALD 2</option>
+                  <option>EMERALD 1</option>
+                  <option>DIAMOND 4</option>
+                  <option>DIAMOND 3</option>
+                  <option>DIAMOND 2</option>
+                  <option>DIAMOND 1</option>
+                  <option>MASTER</option>
+                  <option>GRANDMASTER</option>
+                  <option>CHALLENGER</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700"
+                  >Región</label
+                >
+                <select
+                  id="region"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                >
+                  <option>EUW</option>
+                  <option>EUNE</option>
+                  <option>NA</option>
+                  <option>KR</option>
+                  <option>BR</option>
+                  <option>LAN</option>
+                  <option>LAS</option>
+                  <option>OCE</option>
+                  <option>TR</option>
+                  <option>RU</option>
+                  <option>JP</option>
+                  <option>PH</option>
+                  <option>SG</option>
+                  <option>TH</option>
+                  <option>TW</option>
+                  <option>VN</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2">
+                <label
+                  class="block text-sm font-medium mb-1.5 dark:text-slate-300 text-slate-700"
+                  >Nota (opcional)</label
+                >
+                <input
+                  id="note"
+                  placeholder="main role, mmr, duo, lo que sea…"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all dark:text-white"
+                />
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+              <button
+                id="btnSave"
+                type="submit"
+                class="px-5 py-3 bg-primary hover:bg-primary/90 text-background-dark font-bold rounded-lg transition-transform active:scale-[0.98]"
+              >
+                Guardar
+              </button>
+
+              <button
+                id="btnCancelEdit"
+                type="button"
+                class="hidden px-5 py-3 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors font-bold"
+              >
+                Cancelar edición
+              </button>
+
+              <span
+                id="appMsg"
+                class="text-sm text-slate-500 dark:text-slate-400"
+              ></span>
+            </div>
+          </form>
+
+          <!-- Tabla (tbody ID antiguo) -->
+          <div class="mt-6 overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+            <table class="min-w-full text-sm">
+              <thead class="bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400">
+                <tr>
+                  <th class="text-left px-4 py-3 font-semibold">Summoner</th>
+                  <th class="text-left px-4 py-3 font-semibold">Tag</th>
+                  <th class="text-left px-4 py-3 font-semibold">Elo</th>
+                  <th class="text-left px-4 py-3 font-semibold">Región</th>
+                  <th class="text-left px-4 py-3 font-semibold">Nota</th>
+                  <th class="text-left px-4 py-3 font-semibold">Pública</th>
+                  <th class="text-right px-4 py-3 font-semibold">Acciones</th>
+                </tr>
+              </thead>
+              <tbody
+                id="tbody"
+                class="divide-y divide-slate-200 dark:divide-slate-800"
+              ></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Bloquecito inferior como en el diseño nuevo -->
+        <div class="mt-10 flex flex-col items-center gap-3 text-center">
+          <p class="text-xs text-slate-500 dark:text-slate-500 font-medium tracking-widest uppercase">
+            Join thousands of summoners organizing their climb
+          </p>
         </div>
       </div>
-      -->
+    </main>
 
-      <!-- Ver cuentas de un amigo -->
-      <!-- <div class="card" style="margin-bottom:16px">
-        <h2>Ver cuentas de un amigo</h2>
-        <p class="muted">Introduce el código que te haya pasado tu amigo.</p>
-
-        <div class="row">
-          <input id="friendCodeInput" placeholder="codigo-del-amigo" style="max-width:260px" />
-          <button id="btnLoadFriend" type="button" class="btn btn-secondary">
-            Ver cuentas
-          </button>
-          <button id="btnBackToMine" type="button" class="btn btn-ghost hidden">
-            Volver a mis cuentas
-          </button>
-        </div>
-      </div> -->
-
-      <div class="card-header">
-        <div>
-          <h2>Mis cuentas</h2>
-          <p class="muted">Se guardan en tu Supabase (solo tú las ves).</p>
-        </div>
-        <button id="btnRefresh" class="btn btn-ghost">Refrescar</button>
+    <footer class="relative z-10 py-8 px-6 text-center">
+      <div class="flex justify-center gap-6 mb-4">
+        <a
+          class="text-slate-500 hover:text-primary transition-colors text-xs font-medium"
+          href="#"
+          >Privacy Policy</a
+        >
+        <a
+          class="text-slate-500 hover:text-primary transition-colors text-xs font-medium"
+          href="#"
+          >Terms of Service</a
+        >
+        <a
+          class="text-slate-500 hover:text-primary transition-colors text-xs font-medium"
+          href="#"
+          >Patch Notes</a
+        >
       </div>
+      <p
+        class="text-[10px] text-slate-600 dark:text-slate-600 max-w-2xl mx-auto uppercase tracking-widest"
+      >
+        List of Legends isn't endorsed by Riot Games and doesn't reflect the
+        views or opinions of Riot Games or anyone officially involved in
+        producing or managing League of Legends.
+      </p>
+    </footer>
 
-      <form id="accountForm" class="grid3">
-        <input type="hidden" id="editId" />
-
-        <label>
-          Summoner
-          <input id="summonerName" required placeholder="NombreInvocador" />
-        </label>
-
-        <label>
-          Tag (opcional)
-          <input id="tagLine" placeholder="EUW / 1234 / etc." />
-        </label>
-
-        <label>
-          Elo
-          <select id="elo">
-            <option value="">(Sin elo)</option>
-
-            <option>IRON 4</option>
-            <option>IRON 3</option>
-            <option>IRON 2</option>
-            <option>IRON 1</option>
-            <option>BRONZE 4</option>
-            <option>BRONZE 3</option>
-            <option>BRONZE 2</option>
-            <option>BRONZE 1</option>
-            <option>SILVER 4</option>
-            <option>SILVER 3</option>
-            <option>SILVER 2</option>
-            <option>SILVER 1</option>
-            <option>GOLD 4</option>
-            <option>GOLD 3</option>
-            <option>GOLD 2</option>
-            <option>GOLD 1</option>
-            <option>PLATINUM 4</option>
-            <option>PLATINUM 3</option>
-            <option>PLATINUM 2</option>
-            <option>PLATINUM 1</option>
-            <option>EMERALD 4</option>
-            <option>EMERALD 3</option>
-            <option>EMERALD 2</option>
-            <option>EMERALD 1</option>
-            <option>DIAMOND 4</option>
-            <option>DIAMOND 3</option>
-            <option>DIAMOND 2</option>
-            <option>DIAMOND 1</option>
-
-            <option>MASTER</option>
-            <option>GRANDMASTER</option>
-            <option>CHALLENGER</option>
-          </select>
-        </label>
-
-
-        <label>
-          Región
-          <select id="region">
-            <option>EUW</option>
-            <option>EUNE</option>
-            <option>NA</option>
-            <option>KR</option>
-            <option>BR</option>
-            <option>LAN</option>
-            <option>LAS</option>
-            <option>OCE</option>
-            <option>TR</option>
-            <option>RU</option>
-            <option>JP</option>
-            <option>PH</option>
-            <option>SG</option>
-            <option>TH</option>
-            <option>TW</option>
-            <option>VN</option>
-          </select>
-        </label>
-
-        <label class="span3">
-          Nota (opcional)
-          <input id="note" placeholder="main role, mmr, duo, lo que sea…" />
-        </label>
-
-        <div class="row span3">
-          <button id="btnSave" type="submit" class="btn">Guardar</button>
-          <button id="btnCancelEdit" type="button" class="btn btn-secondary hidden">
-            Cancelar edición
-          </button>
-          <span id="appMsg" class="muted"></span>
-        </div>
-      </form>
-
-      <div class="tablewrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Summoner</th>
-              <th>Tag</th>
-              <th>Elo</th>
-              <th>Región</th>
-              <th>Nota</th>
-              <th>Pública</th>
-              <th class="right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-
-    </section>
-  </main>
-
-  <footer class="footer muted">
-    <span>List Of Legends · Supabase + Vanilla JS</span>
-  </footer>
-
-  <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./app.js"></script>
-</body>
-
+    <!-- Supabase + tu lógica -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./app.js"></script>
+  </body>
 </html>

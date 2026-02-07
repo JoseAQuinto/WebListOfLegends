@@ -194,48 +194,80 @@ async function loadFriendAccounts(ownerSlug) {
   setAppMsg("");
 }
 
+
 function renderRows(rows) {
   if (!tbody) return;
 
   if (!rows.length) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="7" class="muted">No hay cuentas aún.</td>
+        <td colspan="7" class="px-4 py-4 text-sm text-slate-500 dark:text-slate-400">
+          No hay cuentas aún.
+        </td>
       </tr>
     `;
     return;
   }
 
+  const btnBase =
+    "inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors";
+
+  const btnGhost =
+    `${btnBase} border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-200`;
+
+  const btnDanger =
+    `${btnBase} border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/15`;
+
   tbody.innerHTML = rows
     .map((r) => {
-      const viewBtn = `<button class="pill" data-action="view">Ver</button>`;
+      const viewBtn = `<button type="button" class="${btnGhost}" data-action="view">Ver</button>`;
 
       const actionsHtml = viewingFriend
         ? viewBtn
         : `
           ${viewBtn}
-          <button class="pill" data-action="edit">Editar</button>
-          <button class="pill-danger" data-action="delete">Borrar</button>
+          <button type="button" class="${btnGhost}" data-action="edit">Editar</button>
+          <button type="button" class="${btnDanger}" data-action="delete">Borrar</button>
         `;
 
       const publicHtml = viewingFriend
-        ? `<span class="muted">${r.is_public ? "Sí" : "No"}</span>`
-        : `<input type="checkbox" data-action="toggle-public" ${r.is_public ? "checked" : ""} />`;
+        ? `<span class="text-slate-500 dark:text-slate-400">${r.is_public ? "Sí" : "No"}</span>`
+        : `
+          <label class="inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+            <input
+              type="checkbox"
+              class="h-4 w-4 rounded border-slate-300 dark:border-slate-700 bg-transparent text-primary focus:ring-primary"
+              data-action="toggle-public"
+              ${r.is_public ? "checked" : ""}
+            />
+          </label>
+        `;
 
       return `
-        <tr data-id="${r.id}">
-          <td><strong>${escapeHtml(r.summoner_name)}</strong></td>
-          <td>${escapeHtml(r.tag_line || "")}</td>
-          <td>${escapeHtml(r.region || "")}</td>
-          <td>${escapeHtml(r.elo || "")}</td>
-          <td>${escapeHtml(r.note || "")}</td>
-          <td>${publicHtml}</td>
-          <td class="right">${actionsHtml}</td>
+        <tr data-id="${r.id}" class="hover:bg-slate-50 dark:hover:bg-slate-900/30">
+          <td class="px-4 py-3">
+            <strong class="text-slate-900 dark:text-white">${escapeHtml(r.summoner_name)}</strong>
+          </td>
+          <td class="px-4 py-3 text-slate-700 dark:text-slate-200">${escapeHtml(r.tag_line || "")}</td>
+
+          <!-- ✅ Elo antes que Región -->
+          <td class="px-4 py-3 text-slate-700 dark:text-slate-200">${escapeHtml(r.elo || "")}</td>
+          <td class="px-4 py-3 text-slate-700 dark:text-slate-200">${escapeHtml(r.region || "")}</td>
+
+          <td class="px-4 py-3 text-slate-700 dark:text-slate-200">${escapeHtml(r.note || "")}</td>
+          <td class="px-4 py-3">${publicHtml}</td>
+
+          <td class="px-4 py-3 text-right">
+            <div class="inline-flex gap-2">
+              ${actionsHtml}
+            </div>
+          </td>
         </tr>
       `;
     })
     .join("");
 }
+
 
 // Share (owner_slug)
 async function saveMyCode(slug) {
@@ -277,20 +309,10 @@ authForm?.addEventListener("submit", async (e) => {
   await refreshSessionUI();
 });
 
-btnSignUp?.addEventListener("click", async () => {
-  setMsg(authMsg, "");
-
-  const email = authEmail?.value.trim();
-  const password = authPassword?.value;
-
-  const { error } = await supabaseClient.auth.signUp({ email, password });
-  if (error) return setMsg(authMsg, "Error al crear cuenta: " + error.message);
-
-  setMsg(
-    authMsg,
-    "Cuenta creada. Si tienes confirmación por email activada, revisa tu correo."
-  );
+btnSignUp?.addEventListener("click", () => {
+  location.href = "./register.html";
 });
+
 
 btnLogout?.addEventListener("click", async () => {
   await supabaseClient.auth.signOut();
@@ -397,18 +419,19 @@ tbody?.addEventListener("click", async (e) => {
     return;
   }
 
-  if (action === "edit") {
-    const tds = tr.querySelectorAll("td");
-    fillForm({
-      id,
-      summoner_name: tds[0]?.innerText?.trim(),
-      tag_line: tds[1]?.innerText?.trim(),
-      region: tds[2]?.innerText?.trim(),
-      elo: tds[3]?.innerText?.trim(),  // <-- NUEVO (posiciones cambiadas)
-      note: tds[4]?.innerText?.trim(), // <-- NUEVO
-    });
-    return;
-  }
+if (action === "edit") {
+  const tds = tr.querySelectorAll("td");
+  fillForm({
+    id,
+    summoner_name: tds[0]?.innerText?.trim(),
+    tag_line: tds[1]?.innerText?.trim(),
+    elo: tds[2]?.innerText?.trim(),     // ✅ ahora elo es col 2
+    region: tds[3]?.innerText?.trim(),  // ✅ region es col 3
+    note: tds[4]?.innerText?.trim(),
+  });
+  return;
+}
+
 
   if (action === "delete") {
     const ok = confirm("¿Borrar esta cuenta?");
