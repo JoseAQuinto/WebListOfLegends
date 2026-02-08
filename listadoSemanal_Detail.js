@@ -28,8 +28,6 @@ const slotDay = document.getElementById("slotDay");
 const slotFrom = document.getElementById("slotFrom");
 const slotTo = document.getElementById("slotTo");
 const slotNote = document.getElementById("slotNote");
-const slotMode = document.getElementById("slotMode");
-const slotCapacity = document.getElementById("slotCapacity");
 
 // Join modal + form
 const joinModal = document.getElementById("joinModal");
@@ -44,8 +42,12 @@ const joinMsg = document.getElementById("joinMsg");
 const btnJoinCancel = document.getElementById("btnJoinCancel");
 
 // Helpers
-function show(el) { el?.classList.remove("hidden"); }
-function hide(el) { el?.classList.add("hidden"); }
+function show(el) {
+  el?.classList.remove("hidden");
+}
+function hide(el) {
+  el?.classList.add("hidden");
+}
 
 function setMsg(el, text, ms = 2500) {
   if (!el) return;
@@ -67,7 +69,9 @@ function parseParams() {
   return { slug: (p.get("week") || "").trim() };
 }
 
-function dateFromYmd(ymd) { return new Date(ymd + "T00:00:00"); }
+function dateFromYmd(ymdStr) {
+  return new Date(ymdStr + "T00:00:00");
+}
 
 function addDays(date, days) {
   const d = new Date(date);
@@ -84,22 +88,35 @@ function ymd(date) {
 
 function fmtDateLong(date) {
   try {
-    return date.toLocaleDateString("es-ES", { weekday: "long", year: "numeric", month: "short", day: "numeric" });
-  } catch { return String(date); }
+    return date.toLocaleDateString("es-ES", {
+      weekday: "long",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch {
+    return String(date);
+  }
 }
 
 function fmtDow(date) {
-  try { return date.toLocaleDateString("es-ES", { weekday: "short" }); }
-  catch { return ""; }
+  try {
+    return date.toLocaleDateString("es-ES", { weekday: "short" });
+  } catch {
+    return "";
+  }
 }
 
 function fmtTime(iso) {
   try {
     const d = new Date(iso);
     return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  } catch { return iso || ""; }
+  } catch {
+    return iso || "";
+  }
 }
 
+// Crea ISO usando la hora local del usuario
 function isoAtLocal(ymdStr, hhmm) {
   const d = new Date(`${ymdStr}T${hhmm}:00`);
   return d.toISOString();
@@ -109,29 +126,46 @@ function initials(name) {
   const s = (name || "").trim();
   if (!s) return "??";
   const parts = s.split(/\s+/).slice(0, 2);
-  return parts.map(p => p[0]?.toUpperCase() || "").join("").slice(0, 2) || "??";
+  return (
+    parts
+      .map((p) => p[0]?.toUpperCase() || "")
+      .join("")
+      .slice(0, 2) || "??"
+  );
 }
 
 function modeLabel(mode) {
   switch (mode) {
-    case "ranked_solo": return "Ranked Solo/Duo";
-    case "ranked_flex": return "Ranked Flex";
-    case "aram": return "ARAM";
-    case "normal": return "Normal";
-    case "custom": return "Custom";
-    default: return "Sesión";
+    case "ranked_solo":
+      return "Ranked Solo/Duo";
+    case "ranked_flex":
+      return "Ranked Flex";
+    case "aram":
+      return "ARAM";
+    case "normal":
+      return "Normal";
+    case "custom":
+      return "Custom";
+    default:
+      return "Sesión";
   }
 }
 
 function modeBadgeClasses(mode) {
-  // no usamos colores fijos fuertes, solo tonos suaves gamer
+  // tonos suaves gamer
   switch (mode) {
-    case "ranked_solo": return "bg-purple-500/10 text-purple-300";
-    case "ranked_flex": return "bg-primary/10 text-primary";
-    case "aram": return "bg-green-500/10 text-green-300";
-    case "normal": return "bg-slate-500/10 text-slate-200";
-    case "custom": return "bg-orange-500/10 text-orange-300";
-    default: return "bg-primary/10 text-primary";
+    case "ranked_solo":
+      return "bg-purple-500/10 text-purple-300";
+    case "ranked_flex":
+      return "bg-primary/10 text-primary";
+    case "aram":
+      return "bg-green-500/10 text-green-300";
+    case "normal":
+      return "bg-slate-500/10 text-slate-200";
+    case "custom":
+      return "bg-orange-500/10 text-orange-300";
+    default:
+      return "bg-primary/10 text-primary";
   }
 }
 
@@ -140,18 +174,22 @@ let currentWeek = null;
 let slots = [];
 let signups = [];
 
+// ---------- Data loading ----------
 function buildDayOptions(weekStartYmd) {
   if (!slotDay) return;
   const start = dateFromYmd(weekStartYmd);
   const days = Array.from({ length: 7 }, (_, i) => addDays(start, i));
   slotDay.innerHTML = days
-    .map((d) => `<option value="${ymd(d)}">${escapeHtml(fmtDateLong(d))}</option>`)
+    .map(
+      (d) => `<option value="${ymd(d)}">${escapeHtml(fmtDateLong(d))}</option>`
+    )
     .join("");
 }
 
 async function loadWeekBySlug(slug) {
   setMsg(detailMsg, "Cargando…", 0);
 
+  // Pedimos estas porque en tu app existen (y son típicas)
   const { data, error } = await supabaseClient
     .from("lol_play_weeks")
     .select("id, week_start, title, description, slug, timezone")
@@ -159,8 +197,14 @@ async function loadWeekBySlug(slug) {
     .limit(1)
     .maybeSingle();
 
-  if (error) { setMsg(detailMsg, "Error: " + error.message); return null; }
-  if (!data) { setMsg(detailMsg, "No existe esa semana."); return null; }
+  if (error) {
+    setMsg(detailMsg, "Error: " + error.message);
+    return null;
+  }
+  if (!data) {
+    setMsg(detailMsg, "No existe esa semana.");
+    return null;
+  }
 
   return data;
 }
@@ -168,15 +212,17 @@ async function loadWeekBySlug(slug) {
 async function loadSlotsAndSignups(weekId) {
   setMsg(detailMsg, "Cargando…", 0);
 
-  // OJO: si no tienes columnas mode/capacity en la tabla, Supabase dará error si las pides.
-  // Para ir a lo seguro, pedimos solo las que sabemos existen. Luego, en insert, mandamos mode/capacity "si existen" (ver más abajo).
+  // ✅ select("*") para que nunca rompa si faltan columnas
   const { data: slotsData, error: slotsErr } = await supabaseClient
     .from("lol_play_slots")
-    .select("id, week_id, starts_at, ends_at, note, created_at")
+    .select("*")
     .eq("week_id", weekId)
     .order("starts_at", { ascending: true });
 
-  if (slotsErr) { setMsg(detailMsg, "Error slots: " + slotsErr.message); return; }
+  if (slotsErr) {
+    setMsg(detailMsg, "Error slots: " + slotsErr.message);
+    return;
+  }
 
   slots = slotsData || [];
 
@@ -190,17 +236,21 @@ async function loadSlotsAndSignups(weekId) {
 
   const { data: suData, error: suErr } = await supabaseClient
     .from("lol_play_slot_signups")
-    .select("id, slot_id, display_name, note, created_at")
+    .select("*")
     .in("slot_id", slotIds)
     .order("created_at", { ascending: true });
 
-  if (suErr) { setMsg(detailMsg, "Error signups: " + suErr.message); return; }
+  if (suErr) {
+    setMsg(detailMsg, "Error signups: " + suErr.message);
+    return;
+  }
 
   signups = suData || [];
   renderTimeline();
   setMsg(detailMsg, "");
 }
 
+// ---------- Grouping / date helpers ----------
 function groupByDay(slotsArr, weekStartYmd) {
   const start = dateFromYmd(weekStartYmd);
   const map = {};
@@ -230,7 +280,7 @@ function dayIsToday(dayDate) {
   );
 }
 
-// NEW: calendar render gamer
+// ---------- Render ----------
 function renderTimeline() {
   if (!timelineWrap || !currentWeek) return;
 
@@ -241,75 +291,97 @@ function renderTimeline() {
   timelineWrap.innerHTML = days
     .map((d) => {
       const dayKey = ymd(d);
-      const daySlots = (byDay[dayKey] || []).slice().sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
+      const daySlots = (byDay[dayKey] || [])
+        .slice()
+        .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
       const today = dayIsToday(d);
 
-      const dayHeader = `
-        <div class="${today ? "bg-primary/5 border-primary/30" : "bg-white dark:bg-slate-950/20 border-slate-200 dark:border-slate-800"} border rounded-2xl p-4 neon-hover">
+      return `
+        <div class="${today
+          ? "bg-primary/5 border-primary/30"
+          : "bg-white dark:bg-slate-950/20 border-slate-200 dark:border-slate-800"
+        } border rounded-2xl p-4 neon-hover">
           <div class="flex items-start justify-between gap-2">
             <div class="min-w-0">
               <div class="flex items-baseline gap-2">
-                <span class="text-xs font-bold uppercase tracking-widest ${today ? "text-primary" : "text-slate-500 dark:text-slate-400"}">${escapeHtml(fmtDow(d))}</span>
-                <span class="text-2xl font-black ${today ? "text-primary" : ""}">${escapeHtml(d.getDate())}</span>
+                <span class="text-xs font-bold uppercase tracking-widest ${today ? "text-primary" : "text-slate-500 dark:text-slate-400"
+        }">${escapeHtml(fmtDow(d))}</span>
+                <span class="text-2xl font-black ${today ? "text-primary" : ""}">${escapeHtml(
+          d.getDate()
+        )}</span>
               </div>
-              <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400 truncate">${escapeHtml(d.toLocaleDateString())}</div>
+              <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400 truncate">${escapeHtml(
+          d.toLocaleDateString()
+        )}</div>
             </div>
 
             <button type="button"
               class="shrink-0 p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
-              data-action="quick-create" data-day="${escapeHtml(dayKey)}" aria-label="Crear tramo">
+              data-action="quick-create" data-day="${escapeHtml(
+          dayKey
+        )}" aria-label="Crear tramo">
               <span class="material-symbols-outlined text-[20px]">add</span>
             </button>
           </div>
 
           <div class="mt-4 space-y-3">
-            ${
-              !daySlots.length
-                ? `<div class="border border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-4 text-center text-sm text-slate-500 dark:text-slate-400">Sin tramos</div>`
-                : daySlots
-                    .map((s) => {
-                      const sSignups = signups.filter((x) => x.slot_id === s.id);
-                      const capacity = 5; // por ahora (si luego añades columna capacity, cámbialo aquí a s.capacity)
-                      const taken = sSignups.length;
-                      const left = Math.max(0, capacity - taken);
+            ${!daySlots.length
+          ? `<div class="border border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-4 text-center text-sm text-slate-500 dark:text-slate-400">Sin tramos</div>`
+          : daySlots
+            .map((s) => {
+              const sSignups = signups.filter((x) => x.slot_id === s.id);
 
-                      // Si más adelante guardas "mode" en la tabla, cambia mode a s.mode
-                      const mode = "ranked_flex";
-                      const badgeClass = modeBadgeClasses(mode);
+              const capacity = 5;
+              const taken = sSignups.length;
+              const left = Math.max(0, capacity - taken);
 
-                      const avatars = sSignups.slice(0, 4).map((p) => {
-                        const ini = initials(p.display_name);
-                        return `
-                          <div class="size-7 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center text-[10px] font-black">
-                            ${escapeHtml(ini)}
-                          </div>
-                        `;
-                      }).join("");
+              const mode = "ranked_flex";
+              const badgeClass = modeBadgeClasses(mode);
 
-                      const moreCount = sSignups.length - 4;
 
-                      const playersRow = !sSignups.length
-                        ? `<div class="text-xs text-slate-500 dark:text-slate-400">Nadie apuntado todavía.</div>`
-                        : `
+              const avatars = sSignups
+                .slice(0, 4)
+                .map((p) => {
+                  const ini = initials(p.display_name);
+                  return `
+                            <div class="size-7 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center text-[10px] font-black">
+                              ${escapeHtml(ini)}
+                            </div>
+                          `;
+                })
+                .join("");
+
+              const moreCount = sSignups.length - 4;
+
+              const playersRow = !sSignups.length
+                ? `<div class="text-xs text-slate-500 dark:text-slate-400">Nadie apuntado todavía.</div>`
+                : `
                           <div class="flex items-center justify-between gap-2">
                             <div class="flex -space-x-2">
                               ${avatars}
-                              ${moreCount > 0 ? `
+                              ${moreCount > 0
+                  ? `
                                 <div class="size-7 rounded-full bg-slate-200/70 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 flex items-center justify-center text-[10px] font-black text-slate-700 dark:text-slate-200">
                                   +${moreCount}
-                                </div>` : ""}
+                                </div>`
+                  : ""
+                }
                             </div>
                             <div class="text-[11px] text-slate-500 dark:text-slate-400">
-                              ${left} plaza${left === 1 ? "" : "s"} libre${left === 1 ? "" : "s"}
+                              ${left} plaza${left === 1 ? "" : "s"} libre${left === 1 ? "" : "s"
+                }
                             </div>
                           </div>
                         `;
 
-                      const time = `${escapeHtml(fmtTime(s.starts_at))}–${escapeHtml(fmtTime(s.ends_at))}`;
-                      const title = s.note ? escapeHtml(s.note) : "Sesión";
+              const time = `${escapeHtml(fmtTime(s.starts_at))}–${escapeHtml(
+                fmtTime(s.ends_at)
+              )}`;
+              const title = s.note ? escapeHtml(s.note) : "Sesión";
 
-                      return `
-                        <article class="bg-white dark:bg-slate-950/30 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:border-primary/50 transition-all shadow-sm neon-hover" data-slot-id="${s.id}">
+              return `
+                        <article class="bg-white dark:bg-slate-950/30 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:border-primary/50 transition-all shadow-sm neon-hover" data-slot-id="${s.id
+                }">
                           <div class="flex items-start justify-between gap-3">
                             <div class="min-w-0">
                               <div class="flex items-center gap-2">
@@ -334,32 +406,40 @@ function renderTimeline() {
                             ${playersRow}
                           </div>
 
-                          ${
-                            sSignups.length
-                              ? `<div class="mt-3 space-y-1">
-                                  ${sSignups.slice(0, 3).map((p) => {
-                                    const note = p.note ? ` · ${escapeHtml(p.note)}` : "";
-                                    return `<div class="text-xs text-slate-700 dark:text-slate-200 truncate"><span class="font-bold">${escapeHtml(p.display_name)}</span><span class="text-slate-500 dark:text-slate-400">${note}</span></div>`;
-                                  }).join("")}
-                                  ${sSignups.length > 3 ? `<div class="text-xs text-slate-500 dark:text-slate-400">y ${sSignups.length - 3} más…</div>` : ""}
+                          ${sSignups.length
+                  ? `<div class="mt-3 space-y-1">
+                                  ${sSignups
+                    .slice(0, 3)
+                    .map((p) => {
+                      const note = p.note
+                        ? ` · ${escapeHtml(p.note)}`
+                        : "";
+                      return `<div class="text-xs text-slate-700 dark:text-slate-200 truncate"><span class="font-bold">${escapeHtml(
+                        p.display_name
+                      )}</span><span class="text-slate-500 dark:text-slate-400">${note}</span></div>`;
+                    })
+                    .join("")}
+                                  ${sSignups.length > 3
+                    ? `<div class="text-xs text-slate-500 dark:text-slate-400">y ${sSignups.length - 3
+                    } más…</div>`
+                    : ""
+                  }
                                 </div>`
-                              : ""
-                          }
+                  : ""
+                }
                         </article>
                       `;
-                    })
-                    .join("")
-            }
+            })
+            .join("")
+        }
           </div>
         </div>
       `;
-
-      return dayHeader;
     })
     .join("");
 }
 
-// ---- Modals open/close
+// ---------- Modals open/close ----------
 function openCreateSlotModal(dayYmd = null) {
   if (dayYmd && slotDay) slotDay.value = dayYmd;
   setMsg(detailMsgInline, "", 0);
@@ -383,7 +463,7 @@ function closeJoinModal() {
   setMsg(joinMsg, "", 0);
 }
 
-// Buttons
+// ---------- Buttons wiring ----------
 btnOpenCreateSlot?.addEventListener("click", () => openCreateSlotModal(null));
 
 btnRefreshDetail?.addEventListener("click", async () => {
@@ -403,11 +483,12 @@ btnJoinCancel?.addEventListener("click", closeJoinModal);
 // ESC closes
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
-  if (createSlotModal && !createSlotModal.classList.contains("hidden")) closeCreateSlotModal();
+  if (createSlotModal && !createSlotModal.classList.contains("hidden"))
+    closeCreateSlotModal();
   if (joinModal && !joinModal.classList.contains("hidden")) closeJoinModal();
 });
 
-// Create slot (INSERT)
+
 slotForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!currentWeek) return;
@@ -417,26 +498,20 @@ slotForm?.addEventListener("submit", async (e) => {
   const to = slotTo?.value;
   const note = slotNote?.value?.trim() || null;
 
-  const mode = slotMode?.value || "ranked_flex";
-  const capacity = Number(slotCapacity?.value || 5);
 
   if (!day) return setMsg(detailMsgInline, "Elige un día.");
   if (!from || !to) return setMsg(detailMsgInline, "Indica hora inicio/fin.");
   if (to <= from) return setMsg(detailMsgInline, "La hora fin debe ser mayor.");
-  if (!(capacity >= 2 && capacity <= 10)) return setMsg(detailMsgInline, "Capacidad entre 2 y 10.");
 
-  const payload = {
+  const payloadBase = {
     week_id: currentWeek.id,
     starts_at: isoAtLocal(day, from),
     ends_at: isoAtLocal(day, to),
     note,
-
-    // Si tu tabla no tiene estas columnas, comenta estas 2 líneas:
-    // mode,
-    // capacity,
   };
 
-  const { error } = await supabaseClient.from("lol_play_slots").insert([payload]);
+  const { error } = await supabaseClient.from("lol_play_slots").insert([payloadBase]);
+
   if (error) return setMsg(detailMsgInline, "Error al crear tramo: " + error.message);
 
   setMsg(detailMsg, "Tramo creado ✅");
@@ -445,7 +520,7 @@ slotForm?.addEventListener("submit", async (e) => {
   await loadSlotsAndSignups(currentWeek.id);
 });
 
-// Calendar click actions
+// ---------- Calendar click actions ----------
 timelineWrap?.addEventListener("click", (e) => {
   const btn = e.target.closest("button");
   if (!btn) return;
@@ -468,7 +543,7 @@ timelineWrap?.addEventListener("click", (e) => {
   }
 });
 
-// Join submit
+// ---------- Join submit ----------
 joinForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -480,11 +555,18 @@ joinForm?.addEventListener("submit", async (e) => {
   if (!name) return setMsg(joinMsg, "Tu nombre es requerido.");
 
   // anti-duplicados simple (frontend): mismo nombre en el mismo slot
-  const already = signups.some((s) => s.slot_id === slotId && (s.display_name || "").trim().toLowerCase() === name.toLowerCase());
+  const already = signups.some(
+    (s) =>
+      s.slot_id === slotId &&
+      (s.display_name || "").trim().toLowerCase() === name.toLowerCase()
+  );
   if (already) return setMsg(joinMsg, "Ya estás apuntado en este tramo.");
 
   const payload = { slot_id: slotId, display_name: name, note };
-  const { error } = await supabaseClient.from("lol_play_slot_signups").insert([payload]);
+  const { error } = await supabaseClient
+    .from("lol_play_slot_signups")
+    .insert([payload]);
+
   if (error) return setMsg(joinMsg, "Error al unirme: " + error.message);
 
   setMsg(detailMsg, "Apuntado ✅");
@@ -492,12 +574,13 @@ joinForm?.addEventListener("submit", async (e) => {
   await loadSlotsAndSignups(currentWeek.id);
 });
 
-// Init
+// ---------- Init ----------
 (async function init() {
   const { slug } = parseParams();
   if (!slug) {
     if (weekTitleH1) weekTitleH1.textContent = "Timeline semanal";
-    if (weekSubtitle) weekSubtitle.textContent = "Falta el parámetro ?week=slug";
+    if (weekSubtitle)
+      weekSubtitle.textContent = "Falta el parámetro ?week=slug";
     return;
   }
 
@@ -510,7 +593,8 @@ joinForm?.addEventListener("submit", async (e) => {
   const start = dateFromYmd(w.week_start);
   const end = addDays(start, 6);
   const tz = w.timezone || "Europe/Madrid";
-  if (weekSubtitle) weekSubtitle.textContent = `${start.toLocaleDateString()} – ${end.toLocaleDateString()} · ${tz}`;
+  if (weekSubtitle)
+    weekSubtitle.textContent = `${start.toLocaleDateString()} – ${end.toLocaleDateString()} · ${tz}`;
 
   if (weekTagToday) {
     if (isTodayInWeek(w.week_start)) weekTagToday.classList.remove("hidden");
